@@ -1,0 +1,42 @@
+<%
+
+vals = (
+    ('Platform',  'platform'),
+    ('Temperature',  'temperature'),
+    ('Up time',  'upTime'),
+    ('Memory usage',  'memoryUsage'),
+    ('Address',  'ipAddress'),
+    ('CPU',  'cpuUsage'),
+    ('Devices',  'devices'),
+)
+
+%>
+
+
+<html ng-app="rpis">
+
+
+<%include file="../Header.html" args="headerTitle='Status'"/>
+
+<md-content>
+    <md-list  ng-controller='StatusCtrl'>
+    
+%for name, val in vals:
+      
+      <md-list-item class="md-3-line">
+        <div class="md-list-item-text">
+            <h3>${name}</h3>
+            <p><pre>{{${val}}}</pre></p>
+         </div>
+      </md-list-item>
+    
+    <md-divider></md-divider>
+    
+%endfor
+    
+    </md-list>
+</md-content>
+
+<%include file="../Footer.html"/>
+
+</html>

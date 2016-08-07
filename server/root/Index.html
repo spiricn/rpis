@@ -1,0 +1,18 @@
+<html ng-app="MyApp">
+
+<%include file="Includes.html"/>
+
+<body>
+
+<%include file="Header.html" args="headerTitle='Main'"/>
+
+
+<%include file="Footer.html" args="headerTitle='Main'"/>
+
+
+<div ng-controller="Hello">
+    <p>The ID is {{greeting}}</p>
+    <p>The content is {{greeting}}</p>
+</div>
+
+</html>

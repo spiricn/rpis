@@ -1,0 +1,33 @@
+<html ng-app="rpis">
+
+<%include file="../Header.html" args="headerTitle='Rest'"/>
+
+
+
+<h1> Rest API supported by RPIS </h1>
+
+<hr/>
+
+<md-content>
+    <md-list>
+    
+%for handler in REngine.rest.handlers:
+      
+      <md-list-item class="md-3-line">
+        <div class="md-list-item-text">
+            <h3> <a href="/rest/${handler.path}"> ${handler.path} </a> </h3>
+            <p> ${handler.help} </p>
+         </div>
+      </md-list-item>
+    
+    <md-divider></md-divider>
+    
+%endfor
+    
+    </md-list>
+</md-content>
+
+
+<%include file="../Footer.html"/>
+
+</html>

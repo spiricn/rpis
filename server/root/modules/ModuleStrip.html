@@ -1,0 +1,76 @@
+<html ng-app="rpis">
+
+<%include file="../Header.html" args="headerTitle='Strip'"/>
+
+<link href="/node_modules/md-color-picker/dist/mdColorPicker.min.css" rel="stylesheet" />
+<script src="/node_modules/md-color-picker/node_modules/tinycolor2/dist/tinycolor-min.js"></script>
+<script src="/node_modules/md-color-picker/dist/mdColorPicker.min.js"></script>
+
+<script>
+
+app.controller('SwitchCtrl', function($scope, $http) {
+   $scope.onChange = function(state) {
+        if(state == true){
+          $http.get('rest/strip/powerOn').
+              success(function(data) {
+          });
+        }
+        else{
+            $http.get('rest/strip/powerOff').
+              success(function(data) {
+          });
+        }
+     };
+})
+
+app.controller('ColorCtrl', function($scope, $http) {
+   $scope.onChange = function(state) {
+        if(state == true){
+          $http.get('rest/strip/powerOn').
+              success(function(data) {
+          });
+        }
+        else{
+            $http.get('rest/strip/powerOff').
+              success(function(data) {
+          });
+        }
+     };
+     
+     Object.defineProperty($scope, 'color', {
+      get: function() {
+        return "#000000";
+      },
+      set: function(value) {
+        $http.get('rest/strip/color/set?color=' + value.slice(1)).
+              success(function(data) {
+          });
+      }
+    });
+})
+
+
+
+
+</script>
+
+<div layout-padding ng-controller="SwitchCtrl">
+  <h2>Power</p>
+  <md-switch ng-model="data.switch1"  ng-change='onChange(data.switch1)' aria-label="Switch 1"></md-switch>
+  
+</div>
+
+<div layout-padding ng-controller="ColorCtrl">
+    <div 
+        md-color-picker
+        ng-model="color"
+        label="Choose a color"></div>
+
+</div>
+
+
+
+
+<%include file="../Footer.html"/>
+
+</html>

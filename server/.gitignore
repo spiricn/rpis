@@ -1,0 +1,5 @@
+*.pyc
+root/node_modules
+root/home
+tmp
+

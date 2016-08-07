@@ -1,0 +1,29 @@
+<%
+
+vals = (
+    ('Temperature',  'temperature'),
+    ('Up time',  'upTime'),
+    ('Memory usage',  'memoryUsage'),
+    ('Address',  'ipAddress'),
+    ('CPU',  'cpuUsage'),
+    
+)
+
+%>
+
+
+<html ng-app="rpis">
+
+<%include file="../Header.html" args="headerTitle='Power'"/>
+
+<div ng-controller="PowerCtrl">
+
+<md-button ng-click="reboot()" class="md-raised md-primary">Reboot</md-button>
+
+<md-button ng-click="shutdown()" class="md-raised md-primary">Shutdown</md-button>
+
+</div>
+
+<%include file="../Footer.html"/>
+
+</html>
