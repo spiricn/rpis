@@ -35,7 +35,7 @@ public class Locator {
         mContext = context;
         mListener = listener;
         mHandler = new Handler(context.getMainLooper());
-        mState = State.Idle;
+        setState(State.Idle);
     }
 
     public void stop() {
@@ -66,7 +66,7 @@ public class Locator {
                 e.printStackTrace();
             }
 
-            mState = State.Idle;
+            setState(State.Idle);
             Log.d(TAG, "Location stopped");
         }
     }
@@ -80,7 +80,7 @@ public class Locator {
                 return;
             }
 
-            mState = State.Locating;
+            setState(State.Locating);
 
             mSenderThreadRunning = true;
             mSenderThread = new Thread(new Runnable() {
@@ -146,15 +146,13 @@ public class Locator {
     }
 
     private void receiverThread() throws UnknownHostException {
-        
-
         try {
             mListenerSocket = new ServerSocket(RESPONSE_PORT, 0, getLocalAddress());
             mListenerSocket.setReuseAddress(true);
-            
+
             Log.d(TAG, "Started TCP server on " + mListenerSocket.getInetAddress().getHostAddress()
                     + ":" + mListenerSocket.getLocalPort());
-            
+
         } catch (IOException e) {
             Log.e(TAG, "Error creating listener socket: " + e);
             e.printStackTrace();
@@ -202,26 +200,28 @@ public class Locator {
         }
 
         Log.d(TAG, "Receiver thread finished");
+
     }
 
     private void onAddressLocated(String address) {
         Log.d(TAG, "Address located");
         stop();
-
         mListener.onAddressFound(address);
     }
 
     private String receive() {
         Socket socket = null;
         try {
+            Log.d(TAG, "Waiting for connection ..");
             socket = mListenerSocket.accept();
         } catch (IOException e1) {
             e1.printStackTrace();
             return null;
         }
 
+        Log.d(TAG, "Client connected, waiting for response ..");
+
         byte[] message = new byte[1024];
-        DatagramPacket p = new DatagramPacket(message, message.length);
 
         try {
             socket.getInputStream().read(message);
@@ -231,7 +231,13 @@ public class Locator {
             return null;
         }
 
-        return new String(message, 0, p.getLength());
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new String(message, 0, message.length);
     }
 
     private void sendBroadcast() throws IOException {
@@ -250,7 +256,7 @@ public class Locator {
         if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
             ipAddress = Integer.reverseBytes(ipAddress);
         }
-        
+
         byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
 
         return InetAddress.getByAddress(ipByteArray);
@@ -270,8 +276,14 @@ public class Locator {
         return InetAddress.getByAddress(quads);
     }
 
+    private void setState(State state) {
+        Log.d(TAG, "Changing state: " + mState + " -> " + state);
+
+        mState = state;
+    }
+
     private enum State {
-        Idle, Locating
+        Invalid, Idle, Locating
     }
 
     private DatagramSocket mSenderSocket;
@@ -281,7 +293,7 @@ public class Locator {
     private Thread mReceiverThread;
     private Thread mSenderThread;
     private Handler mHandler;
-    private State mState;
+    private State mState = State.Invalid;
     private Context mContext;
     private ILocatorListener mListener;
 }

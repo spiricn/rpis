@@ -23,6 +23,7 @@ class Engine:
     )
 
     BROADCAST_PORT = 13099
+    RESPONSE_PORT = BROADCAST_PORT - 1
 
     def __init__(self, port):
         self._address = getLocalIp()
@@ -34,7 +35,7 @@ class Engine:
                                         tempfile.mkdtemp()
         )
 
-        self._broadcastListener = BroadcastListener(self._address, self.BROADCAST_PORT)
+        self._broadcastListener = BroadcastListener(self._address, self.BROADCAST_PORT, self.RESPONSE_PORT)
         self._broadcastListener.start()
 
         self._server.addRestAPI()
