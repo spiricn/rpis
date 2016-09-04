@@ -1,5 +1,7 @@
 
-package com.rpis.locator;
+package com.rpis.client;
+
+import com.rpis.client.R;
 
 import android.app.Activity;
 import android.os.Bundle;
