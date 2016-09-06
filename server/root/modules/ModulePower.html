@@ -16,6 +16,45 @@ vals = (
 
 <%include file="../Header.html" args="headerTitle='Power'"/>
 
+<script>
+
+app.controller('PowerCtrl', function($scope, $http, $mdDialog){
+    $scope.shutdown = function() {
+        $http.get('rest/power/shutdown').
+            success(function(data) {
+            
+                $mdDialog.show(
+                  $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Alert')
+                    .textContent('System will shutdown in ' + data + ' seconds')
+                    .ariaLabel('Alert Dialog Demo')
+                    .ok('Got it!')
+                );
+                      
+            });
+    }
+    
+    $scope.reboot = function() {
+        $http.get('rest/power/reboot').
+            success(function(data) {
+                    $mdDialog.show(
+                  $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Alert')
+                    .textContent('System will reboot in ' + data + ' seconds')
+                    .ariaLabel('Alert Dialog Demo')
+                    .ok('Got it!')
+                );
+                     
+            });
+    }
+})
+
+</script>
+
 <div ng-controller="PowerCtrl">
 
 <md-button ng-click="reboot()" class="md-raised md-primary">Reboot</md-button>

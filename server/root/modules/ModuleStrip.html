@@ -2,9 +2,7 @@
 
 <%include file="../Header.html" args="headerTitle='Strip'"/>
 
-<link href="/node_modules/md-color-picker/dist/mdColorPicker.min.css" rel="stylesheet" />
-<script src="/node_modules/md-color-picker/node_modules/tinycolor2/dist/tinycolor-min.js"></script>
-<script src="/node_modules/md-color-picker/dist/mdColorPicker.min.js"></script>
+
 
 <script>
 
@@ -37,19 +35,12 @@ app.controller('ColorCtrl', function($scope, $http) {
         }
      };
      
-     Object.defineProperty($scope, 'color', {
-      get: function() {
-        return "#000000";
-      },
-      set: function(value) {
-        $http.get('rest/strip/color/set?color=' + value.slice(1)).
+     $scope.setColor = function() {
+        $http.get('rest/strip/color/set?color=' + $scope.color.toHex().slice(1)).
               success(function(data) {
-          });
-      }
-    });
+        });
+    };
 })
-
-
 
 
 </script>
@@ -60,12 +51,10 @@ app.controller('ColorCtrl', function($scope, $http) {
   
 </div>
 
-<div layout-padding ng-controller="ColorCtrl">
-    <div 
-        md-color-picker
-        ng-model="color"
-        label="Choose a color"></div>
-
+<div layout-padding ng-controller="ColorCtrl" >
+      <picker color='color'></picker>
+      
+      <md-button class="md-raised md-primary" ng-click="setColor()">Set color</md-button>
 </div>
 
 

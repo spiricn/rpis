@@ -1,4 +1,4 @@
-var app = angular.module('rpis', ['ngMaterial', 'material.svgAssetsCache', 'mdColorPicker'])
+var app = angular.module('rpis', ['ngMaterial', 'material.svgAssetsCache', 'ngPicky'])
 
 app.controller('NavBarCtrl', function($scope, $mdSidenav) {
     $scope.showMobileMainHeader = true;
@@ -60,42 +60,5 @@ app.controller('StatusCtrl', function($scope, $http, $timeout) {
     
     // Kick off the interval
     $scope.intervalFunction();
-})
-
-
-
-app.controller('PowerCtrl', function($scope, $http, $mdDialog){
-    $scope.shutdown = function() {
-        $http.get('rest/power/shutdown').
-            success(function(data) {
-            
-                $mdDialog.show(
-                  $mdDialog.alert()
-                    .parent(angular.element(document.querySelector('#popupContainer')))
-                    .clickOutsideToClose(true)
-                    .title('Alert')
-                    .textContent('System will shutdown in ' + data + ' seconds')
-                    .ariaLabel('Alert Dialog Demo')
-                    .ok('Got it!')
-                );
-                      
-            });
-    }
-    
-    $scope.reboot = function() {
-        $http.get('rest/power/reboot').
-            success(function(data) {
-                    $mdDialog.show(
-                  $mdDialog.alert()
-                    .parent(angular.element(document.querySelector('#popupContainer')))
-                    .clickOutsideToClose(true)
-                    .title('Alert')
-                    .textContent('System will reboot in ' + data + ' seconds')
-                    .ariaLabel('Alert Dialog Demo')
-                    .ok('Got it!')
-                );
-                     
-            });
-    }
 })
 
