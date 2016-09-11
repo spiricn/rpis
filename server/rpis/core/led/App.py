@@ -6,6 +6,7 @@ from rpis.core.Color import Color
 from rpis.core.led.StripController import StripController
 from rpis.core.led.proc.ColorSetProc import ColorSetProc
 from rpis.core.led.proc.CycleProc import CycleProc
+import argparse
 
 
 logger = logging.getLogger(__name__)
@@ -22,10 +23,10 @@ class App(cmd.Cmd):
         self._ctrl.init(True)
 
     def do_on(self, arg):
-        self._ctrl.setRGB(255, 255, 255)
+        self._ctrl.runProcess(ColorSetProc(Color(255, 255, 255), 1.5))
 
     def do_off(self, arg):
-        self._ctrl.setRGB(0, 0, 0)
+        self._ctrl.runProcess(ColorSetProc(Color(0, 0, 0), 1.5))
 
     def do_set(self, arg):
         args = tokenize(arg)
@@ -43,6 +44,11 @@ class App(cmd.Cmd):
             return False
 
         self._ctrl.runProcess(ColorSetProc(Color(r, g, b), duration))
+
+    def do_flash(self, arg):
+        self._ctrl.setRGB(0, 0, 0)
+        self._ctrl.runProcess(ColorSetProc(Color(255, 255, 255), 0.1))
+        self._ctrl.runProcess(ColorSetProc(Color(0, 0, 0), 0.1))
 
     def do_get(self, arg):
         logger.debug(str(self._ctrl.pc.getRGB()))
