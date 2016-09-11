@@ -2,6 +2,7 @@ from collections import namedtuple
 import logging
 
 from rpis.core.Module import Module
+from rpis.core.led.StripController import StripController
 
 
 logger = logging.getLogger(__name__)
@@ -12,9 +13,12 @@ class ModuleStrip(Module):
     def __init__(self):
         Module.__init__(self, 'Strip')
 
-        self._currColor = Color(3, 155, 229)
+        self._currColor = Color(0, 0, 0)
 
         self._powered = False
+
+        self._ctrl = StripController()
+        self._ctrl.startController()
 
     def getColor(self):
         return self._currColor
@@ -23,19 +27,19 @@ class ModuleStrip(Module):
         logger.debug('powering on')
         self._powered = True
 
-        # TODO
+        self._ctrl.init()
 
     def powerOff(self):
         logger.debug('powering off')
         self._powered = False
 
-        # TODO
+        self._ctrl.term()
 
     def setColor(self, color):
         logger.debug('setting new color %r' % str(color))
         self._currColor = color
 
-        # TODO
+        self._ctrl.setRGB(color.red, color.green, color.blue)
 
     @property
     def poweredOn(self):
