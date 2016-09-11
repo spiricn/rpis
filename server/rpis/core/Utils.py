@@ -5,6 +5,9 @@ import tarfile
 
 CommandRes = namedtuple('CommandRes', 'stdout, stderr, rc')
 
+def lerp(val1, val2, ammount):
+    return val1 + (val2 - val1) * ammount
+
 def getFileTimestamp(path):
     return os.stat(path).st_mtime
 
@@ -68,3 +71,4 @@ def humanReadableTime(milliseconds):
     res += '%.02fs' % (elapsedSec + elapsedMs / 1000.0)
 
     return res
+
