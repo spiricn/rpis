@@ -6,9 +6,9 @@
 
 <script>
 
-app.controller('SwitchCtrl', function($scope, $http) {
+app.controller('SwitchCtrl', function($scope, $http, $log) {
    $scope.onChange = function(state) {
-        if(state == true){
+    if(state == true){
           $http.get('rest/strip/powerOn').
               success(function(data) {
           });
@@ -22,25 +22,19 @@ app.controller('SwitchCtrl', function($scope, $http) {
 })
 
 app.controller('ColorCtrl', function($scope, $http) {
-   $scope.onChange = function(state) {
-        if(state == true){
-          $http.get('rest/strip/powerOn').
-              success(function(data) {
-          });
-        }
-        else{
-            $http.get('rest/strip/powerOff').
-              success(function(data) {
-          });
-        }
-     };
-     
-     $scope.setColor = function() {
-        $http.get('rest/strip/color/set?color=' + $scope.color.toHex().slice(1)).
-              success(function(data) {
-        });
+    $scope.color = {
+        hue : 0,
+        saturation : 255,
+        value : 255
     };
+    
+    $scope.updateColor = function(){
+     $http.get('rest/strip/color/set?h=' + ($scope.color.hue/255.0) + '&s=' + ($scope.color.saturation/255.0) + '&v=' + ($scope.color.value/255.0)).
+          success(function(data) {
+      });
+    }
 })
+
 
 
 </script>
@@ -48,18 +42,43 @@ app.controller('ColorCtrl', function($scope, $http) {
 <div layout-padding ng-controller="SwitchCtrl">
   <h2>Power</p>
   <md-switch ng-model="data.switch1"  ng-change='onChange(data.switch1)' aria-label="Switch 1"></md-switch>
+</div>
+
+<div ng-controller="ColorCtrl">
+
+<md-slider-container>
+  <span>Hue</span>
+    <md-slider flex="" min="0" max="255" ng-model="color.hue" aria-label="red" id="red-slider" ng-change='updateColor()'>
+  </md-slider>
   
+  <md-input-container>
+    <input flex="" type="number" ng-model="color.hue" aria-label="red" aria-controls="red-slider">
+  </md-input-container>
+  
+</md-slider-container>
+
+<md-slider-container>
+  <span>Saturation</span>
+  <md-slider flex="" min="0" max="255" ng-model="color.saturation" aria-label="red" id="red-slider"  ng-change='updateColor()'>
+  </md-slider>
+  
+  <md-input-container>
+    <input flex="" type="number" ng-model="color.saturation" aria-label="red" aria-controls="red-slider">
+  </md-input-container>
+  
+</md-slider-container>
+    
+<md-slider-container flex="">
+  <md-input-container>
+    <input flex="" type="number" ng-model="color.value" aria-label="Value" aria-controls="volume-slider" >
+  </md-input-container>
+  <md-slider ng-model="color.value" min="0" max="255" aria-label="Value" id="volume-slider" class="md-accent" md-vertical="" md-range=""  ng-change='updateColor()'></md-slider>
+  
+  <h5>Value</h5>
+</md-slider-container>
+
 </div>
-
-<div layout-padding ng-controller="ColorCtrl" >
-      <picker color='color'></picker>
-      
-      <md-button class="md-raised md-primary" ng-click="setColor()">Set color</md-button>
-</div>
-
-
-
-
+    
 <%include file="../Footer.html"/>
 
 </html>

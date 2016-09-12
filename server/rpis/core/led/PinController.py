@@ -1,10 +1,13 @@
 import logging
 
-import pigpio
 from rpis.core.Color import Color
 
-
 logger = logging.getLogger(__name__)
+
+try:
+    import pigpio
+except ImportError:
+    logger.warning('pigpio not supported on this platform')
 
 PIN_RED = 18
 PIN_GREEN = 23

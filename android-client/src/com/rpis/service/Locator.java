@@ -1,5 +1,5 @@
 
-package com.rpis.client;
+package com.rpis.service;
 
 import java.io.IOException;
 import java.math.BigInteger;
