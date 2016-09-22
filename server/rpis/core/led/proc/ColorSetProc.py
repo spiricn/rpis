@@ -1,44 +1,48 @@
 from rpis.core.Color import Color
-from rpis.core.Utils import lerp
 from rpis.core.led.proc.ProcBase import ProcBase
+from collections import namedtuple
 
+
+ColorKeyFrame = namedtuple('KeyFrame', 'color, time')
 
 class ColorSetProc(ProcBase):
-    def __init__(self, endColor, duration, startColor=None):
+    def __init__(self, keyframes):
         ProcBase.__init__(self)
 
-        self._startColor = startColor
-        self._endColor = endColor
-        self._duration = duration
+        self._keyframes = keyframes
+
 
     def getResult(self):
         return True
 
     def onProcStart(self):
-        if not self._startColor:
-            self._startColor = self.pc.getRGB()
-
         self.startMainLoop()
 
+    def _findFrames(self, currTime):
+        for index, frame in enumerate(self._keyframes):
+            nextFrame = None if index == len(self._keyframes) - 1 else self._keyframes[index + 1]
+
+            if nextFrame:
+                if currTime >= frame.time and currTime < nextFrame.time:
+                    dur = nextFrame.time - frame.time
+
+                    pos = (currTime - frame.time) / dur
+
+                    return (frame.color, nextFrame.color, pos)
+
+            else:
+                return (frame.color, None, 1.0)
+
     def mainLoop(self, dt):
-        a = self.loopDuration / self._duration
-
         done = False
-        if a >= 1.0:
-            a = 1.0
+
+        start, end, a = self._findFrames(self.loopDuration)
+
+        if start and end:
+            currColor = Color.lerp(start, end, a)
+        else:
             done = True
-
-        startHSV = self._startColor.toHSV()
-        endHSV = self._endColor.toHSV()
-
-
-        currHsv = []
-        for i in range(len(startHSV)):
-            currHsv.append(lerp(startHSV[i], endHSV[i], a))
-
-        h, s, v = currHsv
-
-        currColor = Color.fromHSV(h, s, v)
+            currColor = start
 
         self.pc.setRGB(currColor.r, currColor.g, currColor.b)
 

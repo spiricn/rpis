@@ -1,12 +1,12 @@
 import cmd
 import logging
 import sys
+import time
 
 from rpis.core.Color import Color
 from rpis.core.led.StripController import StripController
-from rpis.core.led.proc.ColorSetProc import ColorSetProc
+from rpis.core.led.proc.ColorSetProc import ColorSetProc, ColorKeyFrame
 from rpis.core.led.proc.CycleProc import CycleProc
-import argparse
 
 
 logger = logging.getLogger(__name__)
@@ -23,10 +23,16 @@ class App(cmd.Cmd):
         self._ctrl.init(True)
 
     def do_on(self, arg):
-        self._ctrl.runProcess(ColorSetProc(Color(255, 255, 255), 1.5))
+        self._ctrl.runProcess(ColorSetProc(
+                               [ColorKeyFrame(self._ctrl.pc.getRGB(), 0),
+                                ColorKeyFrame(Color(255, 255, 255), 1.5)]
+                              ))
 
     def do_off(self, arg):
-        self._ctrl.runProcess(ColorSetProc(Color(0, 0, 0), 1.5))
+        self._ctrl.runProcess(ColorSetProc(
+                               [ColorKeyFrame(self._ctrl.pc.getRGB(), 0),
+                                ColorKeyFrame(Color(0, 0, 0), 1.5)]
+                              ))
 
     def do_set(self, arg):
         args = tokenize(arg)
@@ -46,9 +52,11 @@ class App(cmd.Cmd):
         self._ctrl.runProcess(ColorSetProc(Color(r, g, b), duration))
 
     def do_flash(self, arg):
-        self._ctrl.setRGB(0, 0, 0)
-        self._ctrl.runProcess(ColorSetProc(Color(255, 255, 255), 0.1))
-        self._ctrl.runProcess(ColorSetProc(Color(0, 0, 0), 0.1))
+        self._ctrl.runProcess(ColorSetProc(
+                       [ColorKeyFrame(Color(0, 0, 0), 0),
+                        ColorKeyFrame(Color(255, 255, 255), 0.1),
+                        ColorKeyFrame(Color(0, 0, 0), 0.2)],
+                      ))
 
     def do_get(self, arg):
         logger.debug(str(self._ctrl.pc.getRGB()))
@@ -77,6 +85,23 @@ class App(cmd.Cmd):
         self._ctrl.stopController()
 
         return True
+
+    def do_test(self, arg):
+        colors = [
+                  (255, 0, 0, 'red'),
+                  (0, 255, 0, 'green'),
+                  (0, 0, 255, 'blue'),
+                  (255, 255, 0, 'yellow'),
+                  (255, 0, 255, 'magenta'),
+                  (0, 255, 255, 'cyan'),
+                  (255, 255, 255, 'white'),
+                  (0, 0, 0, 'black'),
+                  ]
+
+        for r, g, b, name in colors:
+            logger.debug(name)
+            self._ctrl.setRGB(r, g, b, True)
+            time.sleep(1)
 
 def main():
     logging.basicConfig(level=logging.DEBUG,
