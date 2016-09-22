@@ -8,7 +8,7 @@ manifest = {
         {'file' : 'modules/ModuleRest.html', 'pattern' : '^\\/Rest'},
     ],
 
-    'home_page' : 'modules/ModuleStatus.html',
+    'home_page' : 'modules/ModuleStrip.html',
 
     '404_page' : '404.html',
 
