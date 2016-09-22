@@ -3,7 +3,9 @@
 main () {
     set -e
 
-    ./run.sh rpis/app/App.py "$@"
+    local root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+    $root/run.sh rpis/app/App.py "$@"
 
     return $
 }

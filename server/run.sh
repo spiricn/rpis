@@ -3,9 +3,11 @@
 main() {
     set -e
 
-    local ssc_path=`pwd`/../../ssc
-    PYTHONPATH=$ssc_path:$PYTHONPATH \
-        python3 "$@"
+    local root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+    local ssc_path=$root/../../ssc
+    PYTHONPATH=$ssc_path:$root:$PYTHONPATH \
+        python3 $root/"$@"
 
     return $?
 }
