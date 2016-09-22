@@ -1,5 +1,8 @@
 import colorsys
 
+from rpis.core.Utils import lerp
+
+
 class Color:
     COMP_RED, COMP_GREEN, COMP_BLUE = range(3)
 
@@ -46,6 +49,19 @@ class Color:
         r, g, b = colorsys.hsv_to_rgb(h, s, v)
 
         return Color(r, g, b)
+
+    @staticmethod
+    def lerp(start, end, a):
+        startHSV = start.toHSV()
+        endHSV = end.toHSV()
+
+        currHsv = []
+        for i in range(len(startHSV)):
+            currHsv.append(lerp(startHSV[i], endHSV[i], a))
+
+        h, s, v = currHsv
+
+        return Color.fromHSV(h, s, v)
 
     def __str__(self):
         return 'Color(%.2f, %.2f, %.2f)' % (self.r, self.g, self.b)
