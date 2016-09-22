@@ -7,8 +7,15 @@
 <script>
 
 app.controller('SwitchCtrl', function($scope, $http, $log) {
-   $scope.onChange = function(state) {
-    if(state == true){
+    $scope.poweredOn = false;
+    
+    $http.get('rest/strip/poweredOn').
+        success(function(data) {
+            $scope.poweredOn = data['result']
+    });
+    
+   $scope.updatePower = function() {
+    if($scope.poweredOn){
           $http.get('rest/strip/powerOn').
               success(function(data) {
           });
@@ -28,6 +35,15 @@ app.controller('ColorCtrl', function($scope, $http) {
         value : 255
     };
     
+    $http.get('rest/strip/color').
+        success(function(data) {
+        $scope.color = {
+          hue : data.hue * 255,
+          saturation : data.saturation * 255,
+          value : data.value * 255
+      };
+    });
+    
     $scope.updateColor = function(){
      $http.get('rest/strip/color/set?h=' + ($scope.color.hue/255.0) + '&s=' + ($scope.color.saturation/255.0) + '&v=' + ($scope.color.value/255.0)).
           success(function(data) {
@@ -41,7 +57,7 @@ app.controller('ColorCtrl', function($scope, $http) {
 
 <div layout-padding ng-controller="SwitchCtrl">
   <h2>Power</p>
-  <md-switch ng-model="data.switch1"  ng-change='onChange(data.switch1)' aria-label="Switch 1"></md-switch>
+  <md-switch ng-model="poweredOn"  ng-change='updatePower()' aria-label="Switch 1"></md-switch>
 </div>
 
 <div ng-controller="ColorCtrl">

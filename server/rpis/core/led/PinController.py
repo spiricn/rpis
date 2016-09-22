@@ -19,6 +19,8 @@ class PinController():
     def __init__(self):
         self._initialized = False
 
+        self._color = Color()
+
     @property
     def initialized(self):
         return self._initialized
@@ -31,8 +33,6 @@ class PinController():
             return False
 
         self._pi = pigpio.pi()
-
-        self._color = Color()
 
         self._initialized = True
 

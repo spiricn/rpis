@@ -16,7 +16,7 @@ class ModuleStrip(Module):
         self._ctrl.startController()
 
     def getColor(self):
-        return self._currColor
+        return self._ctrl.pc.getRGB()
 
     def powerOn(self):
         logger.debug('powering on')

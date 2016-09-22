@@ -39,14 +39,21 @@ class ModuleStripREST(ModuleStrip):
 
                 (
                     'strip/poweredOn',
-                    lambda: (CODE_OK, MIME_TEXT, self.poweredOn)
+                    lambda: (CODE_OK, MIME_JSON, self.poweredOnRest())
                 ),
          )
 
-    def getColorRest(self):
-        clr = self.getColor()
+    def poweredOnRest(self):
+        return {'result' : self.poweredOn}
 
-        return (CODE_OK, MIME_TEXT, '#%.2x%.x2%.2x' % (clr.red, clr.green, clr.blue))
+    def getColorRest(self):
+        return (CODE_OK, MIME_JSON, self._colorToJson(self.getColor()))
+
+    @staticmethod
+    def _colorToJson(color):
+        h, s, v = color.toHSV()
+
+        return {'hue' : h, 'saturation': s, 'value' : v}
 
     def setColorREST(self, **kwargs):
         h = kwargs.pop('h', None)
@@ -65,4 +72,4 @@ class ModuleStripREST(ModuleStrip):
 
         self.setColor(Color.fromHSV(h, s, v))
 
-        return (CODE_OK, MIME_JSON, self.getColor())
+        return (CODE_OK, MIME_JSON, self._colorToJson(self.getColor()))
