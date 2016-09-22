@@ -1,14 +1,16 @@
+import json
 import logging
 import socket
 from threading import Thread
 import time
+
+import rpis
 
 
 logger = logging.getLogger(__name__)
 
 class BroadcastListener(Thread):
     RPIS_LOCATOR_REQUEST = "RPIS.REQUEST.ADDRESS";
-    RPIS_LOCATOR_RESPONSE = "RPIS.PROVIDE.ADDRESS";
 
     def __init__(self, address, broadcastPort, responsePort):
         Thread.__init__(self)
@@ -16,6 +18,15 @@ class BroadcastListener(Thread):
         self._broadcastPort = broadcastPort
         self._responsePort = responsePort
         self._address = address
+
+    @staticmethod
+    def _generateAnnounceJSON(self, address, port):
+        return json.dumps({
+            'name' : 'rpis',
+            'version' : rpis.__version__,
+            'address' : 'http://%s:%d' % (address, port),
+            'port' : port
+        }).encode('ascii')
 
     def run(self):
         logger.debug('Listening for broadcasts on port %d', self._broadcastPort)
@@ -35,7 +46,7 @@ class BroadcastListener(Thread):
             msg = data.decode('ascii')
 
             if msg == self.RPIS_LOCATOR_REQUEST:
-                data = (self.RPIS_LOCATOR_RESPONSE + 'http://' + self._address).encode('ascii')
+                data = self._generateAnnounceJSON(address, port)
 
                 responseSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
