@@ -24,11 +24,15 @@ class ModuleStrip(Module):
 
         self._ctrl.init()
 
+        return True
+
     def powerOff(self):
         logger.debug('powering off')
         self._powered = False
 
         self._ctrl.term()
+
+        return True
 
     def setColor(self, color):
         logger.debug('setting new color %r' % str(color))

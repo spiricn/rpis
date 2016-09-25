@@ -11,7 +11,9 @@ app.controller('SwitchCtrl', function($scope, $http, $log) {
     
     $http.get('rest/strip/poweredOn').
         success(function(data) {
-            $scope.poweredOn = data['result']
+            if(data.success){
+                $scope.poweredOn = data.res
+            }
     });
     
    $scope.updatePower = function() {
@@ -37,11 +39,13 @@ app.controller('ColorCtrl', function($scope, $http) {
     
     $http.get('rest/strip/color').
         success(function(data) {
-        $scope.color = {
-          hue : data.hue * 255,
-          saturation : data.saturation * 255,
-          value : data.value * 255
-      };
+        if(data.success){
+            $scope.color = {
+              hue : data.res.hue * 255,
+              saturation : data.res.saturation * 255,
+              value : data.res.value * 255
+          };
+      }
     });
     
     $scope.updateColor = function(){

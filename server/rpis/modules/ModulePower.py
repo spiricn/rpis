@@ -20,6 +20,9 @@ class ModulePower(Module):
         res = shellCommand(['reboot'])
         if res.rc != 0:
             logger.error('reboot command failed: %s' % res.stderr)
+            return False
+
+        return True
 
     def shutdown(self):
         logger.debug('shutting down now')
@@ -30,4 +33,7 @@ class ModulePower(Module):
         res = shellCommand(['poweroff'])
         if res.rc != 0:
             logger.error('poweroff command failed: %s' % res.stderr)
+            return False
+
+        return True
 
