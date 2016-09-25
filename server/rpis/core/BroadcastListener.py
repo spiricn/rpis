@@ -20,24 +20,27 @@ class BroadcastListener(Thread):
         self._address = address
 
     @staticmethod
-    def _generateAnnounceJSON(self, address, port):
+    def _generateAnnounceJSON(address, port):
+        address = 'http://%s:%d' % (address, port)
+
         return json.dumps({
             'name' : 'rpis',
             'version' : rpis.__version__,
-            'address' : 'http://%s:%d' % (address, port),
-            'port' : port
+            'address' : address,
+            'rest' : address + '/rest'
         }).encode('ascii')
 
     def run(self):
-        logger.debug('Listening for broadcasts on port %d', self._broadcastPort)
-
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.bind((self._address, self._broadcastPort))
+        s.bind(('', self._broadcastPort))
+
+        logger.debug('Listening for broadcasts on port %s:%d', self._address, self._broadcastPort)
 
         while True:
             try:
                 data, server = s.recvfrom(1024)
             except ConnectionResetError:
+                logger.error("connection error while receiving broadcast")
                 time.sleep(1)
                 continue;
 
@@ -46,14 +49,13 @@ class BroadcastListener(Thread):
             msg = data.decode('ascii')
 
             if msg == self.RPIS_LOCATOR_REQUEST:
-                data = self._generateAnnounceJSON(address, port)
+                data = self._generateAnnounceJSON(self._address, 80)
 
-                responseSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+                responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 responseSocket.settimeout(10)
+
                 try:
-                    responseSocket.connect((address, self._responsePort))
-                    responseSocket.send(data)
+                    responseSocket.sendto(data, (address, self._responsePort))
                     logger.debug('Responded to %s:%d' % (address, self._responsePort))
                 except Exception as e:
                     logger.error('Error sending response to (%s:%d): %r' % (address, self._responsePort, str(e)))
