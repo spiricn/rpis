@@ -30,15 +30,24 @@ class BroadcastListener(Thread):
             'rest' : address + '/rest'
         }).encode('ascii')
 
+    def stop(self):
+        self._running = False
+        self.join()
+
     def run(self):
+        self._running = True
+
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(2.0)
         s.bind(('', self._broadcastPort))
 
         logger.debug('Listening for broadcasts on port %s:%d', self._address, self._broadcastPort)
 
-        while True:
+        while self._running:
             try:
                 data, server = s.recvfrom(1024)
+            except socket.timeout:
+                continue
             except ConnectionResetError:
                 logger.error("connection error while receiving broadcast")
                 time.sleep(1)
@@ -52,7 +61,7 @@ class BroadcastListener(Thread):
                 data = self._generateAnnounceJSON(self._address, 80)
 
                 responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                responseSocket.settimeout(10)
+                responseSocket.settimeout(2.0)
 
                 try:
                     responseSocket.sendto(data, (address, self._responsePort))

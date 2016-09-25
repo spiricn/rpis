@@ -7,8 +7,8 @@ from rpis.core.led.StripController import StripController
 logger = logging.getLogger(__name__)
 
 class ModuleStrip(Module):
-    def __init__(self):
-        Module.__init__(self, 'Strip')
+    def __init__(self, manager):
+        Module.__init__(self, manager, 'Strip')
 
         self._powered = False
 
@@ -43,3 +43,8 @@ class ModuleStrip(Module):
     @property
     def poweredOn(self):
         return self._powered
+
+    def stopModule(self):
+        if self.poweredOn:
+            self.powerOff()
+        self._ctrl.stopController()

@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 class ModulePowerREST(ModulePower):
     DEFAULT_DELAY_MS = 2000
 
-    def __init__(self):
-        ModulePower.__init__(self)
+    def __init__(self, manager):
+        ModulePower.__init__(self, manager)
 
     def getRestAPI(self):
         return (
@@ -25,13 +25,33 @@ class ModulePowerREST(ModulePower):
                     'power/reboot',
                     self.rebootREST
                 ),
+
+                (
+                 'power/stop',
+                 self.stopREST
+                 )
          )
 
+    def stopREST(self, **kwargs):
+        delayMs = kwargs.pop('delayMs', None)
+        if delayMs == None:
+            delayMs = self.DEFAULT_DELAY_MS
+        else:
+            try:
+                delayMs = int(delayMs[0])
+            except TypeError:
+                return (CODE_BAD_REQUEST, MIME_TEXT, 'Invalid delay argument provided')
+
+        logger.debug('stopping in %d ns' % delayMs)
+
+        Timer(delayMs / 1000.0, self.stop).start()
+
+        return (CODE_OK, MIME_JSON, {'success' : True, 'res' : delayMs})
 
     def rebootREST(self, **kwargs):
         delayMs = kwargs.pop('delayMs', None)
         if delayMs == None:
-            delayMs = self.COMMAND_DELAY_MS
+            delayMs = self.DEFAULT_DELAY_MS
         else:
             try:
                 delayMs = int(delayMs[0])
@@ -47,7 +67,7 @@ class ModulePowerREST(ModulePower):
     def shutdownREST(self, **kwargs):
         delayMs = kwargs.pop('delayMs', None)
         if delayMs == None:
-            delayMs = self.COMMAND_DELAY_MS
+            delayMs = self.DEFAULT_DELAY_MS
         else:
             try:
                 delayMs = int(delayMs[0])

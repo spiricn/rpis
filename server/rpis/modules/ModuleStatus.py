@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 MemoryInfo = namedtuple('MemoryInfo', 'total, free')
 
 class ModuleStatus(Module):
-    def __init__(self):
-        Module.__init__(self, 'Status')
+    def __init__(self, manager):
+        Module.__init__(self, manager, 'Status')
 
     def getRestAPI(self):
         return (
@@ -159,3 +159,6 @@ class ModuleStatus(Module):
             devices.append(line)
 
         return {'devices' : devices}
+
+    def stopModule(self):
+        pass

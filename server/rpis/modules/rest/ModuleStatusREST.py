@@ -8,8 +8,8 @@ from rpis.modules.ModuleStatus import ModuleStatus
 logger = logging.getLogger(__name__)
 
 class ModuleStatusREST(ModuleStatus):
-    def __init__(self):
-        ModuleStatus.__init__(self)
+    def __init__(self, manager):
+        ModuleStatus.__init__(self, manager)
 
     def getRestAPI(self):
         return (

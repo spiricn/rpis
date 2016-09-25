@@ -10,9 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class ModuleStripREST(ModuleStrip):
-    def __init__(self):
-
-        ModuleStrip.__init__(self)
+    def __init__(self, manager):
+        ModuleStrip.__init__(self, manager)
 
     def getRestAPI(self):
         return (

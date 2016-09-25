@@ -8,8 +8,8 @@ from rpis.core.Utils import shellCommand
 logger = logging.getLogger(__name__)
 
 class ModulePower(Module):
-    def __init__(self):
-        Module.__init__(self, 'Power')
+    def __init__(self, manager):
+        Module.__init__(self, manager, 'Power')
 
     def reboot(self):
         logger.debug('rebooting now')
@@ -36,4 +36,13 @@ class ModulePower(Module):
             return False
 
         return True
+
+    def stop(self):
+        logger.debug('stopping now')
+
+        self.manager.engine.stop()
+
+
+    def stopModule(self):
+        pass
 
