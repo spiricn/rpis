@@ -1,6 +1,8 @@
 import logging
+import sys
 
 from rpis.core.Color import Color
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +34,13 @@ class PinController():
             logger.error('already initialized')
             return False
 
-        self._pi = pigpio.pi()
+        if sys.platform != 'win32':
+            self._pi = pigpio.pi()
 
         self._initialized = True
 
-        self.setRGB(0, 0, 0)
+        clr = Color.fromHSV(0.5, 1.0, 1.0)
+        self.setRGB(clr.r, clr.g, clr.b)
 
         logger.debug('initialized OK')
 
@@ -49,9 +53,11 @@ class PinController():
             logger.error('not initialized')
             return False
 
+
         self.setRGB(0, 0, 0)
 
-        self._pi.stop()
+        if sys.platform != 'win32':
+            self._pi.stop()
 
         self._initialized = False
 
@@ -89,7 +95,8 @@ class PinController():
                 logger.error('invalid pin value %d', val)
                 return False
 
-        self._pi.set_PWM_dutycycle(pin, val)
+        if sys.platform != 'win32':
+            self._pi.set_PWM_dutycycle(pin, val)
 
         comp = {
                 PIN_RED : Color.COMP_RED,
