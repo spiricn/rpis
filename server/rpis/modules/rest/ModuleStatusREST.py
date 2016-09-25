@@ -47,5 +47,10 @@ class ModuleStatusREST(ModuleStatus):
                     'status/devices',
                     lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.devices})
                 ),
+
+                (
+                    'status/ping',
+                    lambda: (CODE_OK, MIME_JSON, {'success' : True })
+                 )
          )
 

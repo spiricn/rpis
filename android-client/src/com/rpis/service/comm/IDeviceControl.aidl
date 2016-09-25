@@ -5,6 +5,8 @@ import com.rpis.service.comm.RpisResult;
 
 interface IDeviceControl {
 	RpisResult shutdown(int delayMs);
-	
+
 	RpisResult reboot(int delayMs);
+
+	RpisResult ping();
 }
