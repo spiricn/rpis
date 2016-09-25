@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rpis.client"
+    android:installLocation="internalOnly"
     android:versionCode="1"
-    android:versionName="1.0" android:installLocation="internalOnly">
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="18"
@@ -10,6 +11,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -17,25 +19,53 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".LedControlActivity"
+            android:name="com.rpis.client.locator.LocatorActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" 
-            android:noHistory="true" 
-            >
+            android:launchMode="singleTask"
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                
             </intent-filter>
         </activity>
+
+        <receiver android:name="com.rpis.service.ServiceStarter" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.rpis.RpisService.STOP_SERVICE" />
+                <action android:name="com.rpis.RpisService.START_SERVICE" />
+                <action android:name="com.rpis.RpisService.RESTART_SERVICE" />
+            </intent-filter>
+        </receiver>
+
         <activity
-            android:name=".WebActivity"
+            android:name="com.rpis.client.led.LedControlActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.rpis.client.device.DeviceControlActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.rpis.client.nav.NavigationActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.rpis.service.RpisService" >
+            <intent-filter>
+                <action android:name="com.rpis.RpisService.START_SERVICE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

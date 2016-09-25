@@ -5,9 +5,11 @@ import com.rpis.service.comm.Color;
 
 
 interface ILedControl {
-	RpisResult init();
+	RpisResult powerOn();
 	
-	RpisResult term();
+	RpisResult powerOff();
+	
+	boolean isPoweredOn();
 	
 	Color getColor();
 	

@@ -4,7 +4,7 @@ import com.rpis.service.comm.RpisResult;
 
 
 interface IDeviceControl {
-	RpisResult shutdown();
+	RpisResult shutdown(int delayMs);
 	
-	RpisResult reboot();
+	RpisResult reboot(int delayMs);
 }

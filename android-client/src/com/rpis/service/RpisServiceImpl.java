@@ -5,6 +5,7 @@ import com.rpis.service.comm.IRpisServer;
 import com.rpis.service.comm.IRpisService;
 import com.rpis.service.comm.IServerScanCallback;
 import com.rpis.service.comm.RpisResult;
+import com.rpis.service.comm.ServerInfo;
 
 import android.content.Context;
 import android.os.RemoteException;
@@ -27,17 +28,33 @@ public class RpisServiceImpl extends IRpisService.Stub {
     }
 
     private void scanThread(IServerScanCallback callback) {
+        Locator locator = new Locator(mContext);
+
+        ServerInfo server = null;
+
+        while (server == null) {
+            server = locator.findServer();
+
+            if (server == null) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         try {
-            // TODO
-            callback.onServerFound("192.168.1.42", 80);
+            callback.onServerFound(server);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
-    public IRpisServer connect(String address, int port) throws RemoteException {
-        return new RpisServer(address, port);
+    public IRpisServer connect(ServerInfo info) throws RemoteException {
+        return new RpisServer(info);
     }
 
     private Context mContext;

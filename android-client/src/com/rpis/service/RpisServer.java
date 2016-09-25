@@ -4,13 +4,16 @@ package com.rpis.service;
 import com.rpis.service.comm.IDeviceControl;
 import com.rpis.service.comm.ILedControl;
 import com.rpis.service.comm.IRpisServer;
+import com.rpis.service.comm.ServerInfo;
 
 import android.os.RemoteException;
 
 public class RpisServer extends IRpisServer.Stub {
-    public RpisServer(String address, int port) {
-        mAddress = address;
-        mPort = port;
+    public RpisServer(ServerInfo info) throws RemoteException {
+        mInfo = info;
+
+        mLedControl = new LedControl(this);
+        mDeviceControl = new DeviceControl(this);
     }
 
     @Override
@@ -33,8 +36,14 @@ public class RpisServer extends IRpisServer.Stub {
         return mPort;
     }
 
-    private LedControl mLedControl = new LedControl(this);
-    private DeviceControl mDeviceControl = new DeviceControl(this);
+    @Override
+    public ServerInfo getInfo() throws RemoteException {
+        return mInfo;
+    }
+
+    private LedControl mLedControl;
+    private DeviceControl mDeviceControl;
     private String mAddress;
     private int mPort;
+    private ServerInfo mInfo;
 }

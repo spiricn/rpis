@@ -1,16 +1,16 @@
 
 package com.rpis.service.comm;
 
-import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import com.rpis.service.RpisService;
+
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -38,6 +38,8 @@ public class ServiceLocator {
             e.printStackTrace();
             return null;
         }
+        
+        Log.d(TAG, "" + mState + " " + mService);
 
         if (mState != State.CONNECTED || mService == null) {
             return null;
@@ -97,6 +99,8 @@ public class ServiceLocator {
         mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName arg0, IBinder service) {
+                Log.d(TAG, "Connected to RPIS service");
+
                 mService = IRpisService.Stub.asInterface(service);
 
                 if (mListener != null) {
@@ -104,14 +108,13 @@ public class ServiceLocator {
                 }
                 mState = State.CONNECTED;
 
-                Log.d(TAG, "Connected to RPIS service");
-
                 mSemaphore.release();
             }
 
             @Override
             public void onServiceDisconnected(ComponentName arg0) {
                 Log.d(TAG, "Disconnected from RPIS service");
+
                 mService = null;
                 if (mListener != null) {
                     mListener.onServiceDisconnected();
@@ -120,41 +123,14 @@ public class ServiceLocator {
             }
         };
 
-        Intent explicitIntent = createExplicitFromImplicitIntent(mContext,
-                new Intent(SERVICE_INTENT));
-        mContext.bindService(explicitIntent, mServiceConnection, 0);
-    }
-
-    private static Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
-        // Retrieve all services that can match the given intent
-        PackageManager pm = context.getPackageManager();
-        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
-
-        // Make sure only one match was found
-        if (resolveInfo == null || resolveInfo.size() != 1) {
-            return null;
-        }
-
-        // Get component info and create ComponentName
-        ResolveInfo serviceInfo = resolveInfo.get(0);
-        String packageName = serviceInfo.serviceInfo.packageName;
-        String className = serviceInfo.serviceInfo.name;
-        ComponentName component = new ComponentName(packageName, className);
-
-        // Create a new intent. Use the old one for extras and such reuse
-        Intent explicitIntent = new Intent(implicitIntent);
-
-        // Set the component to be explicit
-        explicitIntent.setComponent(component);
-
-        return explicitIntent;
+        Log.d(TAG, "Connecting to service ..");
+        mContext.bindService(new Intent(mContext, RpisService.class), mServiceConnection, Service.BIND_AUTO_CREATE);
     }
 
     private enum State {
         DISCONNECTED, CONNECTING, CONNECTED
     }
 
-    private static final String SERVICE_INTENT = "com.rpis.RpisService.START_SERVICE";
     private static final String TAG = ServiceLocator.class.getSimpleName();
     private static final int WAIT_TIME_MS = 500;
     private static final long TIMEOUT_INFINITE = -1;

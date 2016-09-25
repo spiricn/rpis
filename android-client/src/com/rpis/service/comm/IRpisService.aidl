@@ -5,9 +5,10 @@ import com.rpis.service.comm.IDeviceControl;
 import com.rpis.service.comm.RpisResult;
 import com.rpis.service.comm.IServerScanCallback;
 import com.rpis.service.comm.IRpisServer;
+import com.rpis.service.comm.ServerInfo;
 
 interface IRpisService {
 	RpisResult scan(in IServerScanCallback callback);
 	
-	IRpisServer connect(String address, int port);
+	IRpisServer connect(in ServerInfo server);
 }
