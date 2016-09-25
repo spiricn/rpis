@@ -1,7 +1,7 @@
 import logging
 from threading import Timer
 
-from ssc.http.HTTP import CODE_OK, MIME_TEXT
+from ssc.http.HTTP import CODE_OK, MIME_TEXT, MIME_JSON, CODE_BAD_REQUEST
 
 from rpis.modules.ModulePower import ModulePower
 
@@ -9,7 +9,7 @@ from rpis.modules.ModulePower import ModulePower
 logger = logging.getLogger(__name__)
 
 class ModulePowerREST(ModulePower):
-    COMMAND_DELAY_SEC = 2
+    DEFAULT_DELAY_MS = 2000
 
     def __init__(self):
         ModulePower.__init__(self)
@@ -28,17 +28,35 @@ class ModulePowerREST(ModulePower):
          )
 
 
-    def rebootREST(self):
-        logger.debug('rebooting in %d seconds' % self.COMMAND_DELAY_SEC)
+    def rebootREST(self, **kwargs):
+        delayMs = kwargs.pop('delayMs', None)
+        if delayMs == None:
+            delayMs = self.COMMAND_DELAY_MS
+        else:
+            try:
+                delayMs = int(delayMs[0])
+            except TypeError:
+                return (CODE_BAD_REQUEST, MIME_TEXT, 'Invalid delay argument provided')
 
-        Timer(self.COMMAND_DELAY_SEC, self.reboot).start()
+        logger.debug('rebooting in %d ns' % delayMs)
 
-        return (CODE_OK, MIME_TEXT, self.COMMAND_DELAY_SEC)
+        Timer(delayMs / 1000.0, self.reboot).start()
 
-    def shutdownREST(self):
-        logger.debug('shutting down in %d seconds' % self.COMMAND_DELAY_SEC)
+        return (CODE_OK, MIME_JSON, {'success' : True, 'res' : delayMs})
 
-        Timer(self.COMMAND_DELAY_SEC, self.shutdown).start()
+    def shutdownREST(self, **kwargs):
+        delayMs = kwargs.pop('delayMs', None)
+        if delayMs == None:
+            delayMs = self.COMMAND_DELAY_MS
+        else:
+            try:
+                delayMs = int(delayMs[0])
+            except TypeError:
+                return (CODE_BAD_REQUEST, MIME_TEXT, 'Invalid delay argument provided')
 
-        return (CODE_OK, MIME_TEXT, self.COMMAND_DELAY_SEC)
+        logger.debug('shutting down in %d ms' % self.delayMs)
+
+        Timer(delayMs / 1000.0, self.shutdown).start()
+
+        return (CODE_OK, MIME_JSON, {'success' : True, 'res' : delayMs})
 

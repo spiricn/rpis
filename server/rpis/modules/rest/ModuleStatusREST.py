@@ -1,6 +1,6 @@
 import logging
 
-from ssc.http.HTTP import CODE_OK, MIME_TEXT
+from ssc.http.HTTP import CODE_OK, MIME_TEXT, MIME_JSON
 
 from rpis.modules.ModuleStatus import ModuleStatus
 
@@ -15,37 +15,37 @@ class ModuleStatusREST(ModuleStatus):
         return (
                 (
                     'status/temperature',
-                    lambda: (CODE_OK, MIME_TEXT, self.temperature)
+                    lambda: (CODE_OK, MIME_JSON, {'success' : True, 'res' : self.temperature})
                 ),
 
                 (
                     'status/upTime',
-                    lambda: (CODE_OK, MIME_TEXT, self.upTime)
+                    lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.temperature})
                 ),
 
                 (
                     'status/memoryUsage',
-                    lambda: (CODE_OK, MIME_TEXT, self.memoryUsage)
+                    lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.temperature})
                 ),
 
                 (
                     'status/ipAddress',
-                    lambda: (CODE_OK, MIME_TEXT, self.ipAddress)
+                    lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.ipAddress})
                 ),
 
                 (
                     'status/cpuUsage',
-                    lambda: (CODE_OK, MIME_TEXT, self.cpuUsage)
+                    lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.cpuUsage})
                  ),
 
                 (
                     'status/platform',
-                    lambda: (CODE_OK, MIME_TEXT, self.platform)
+                    lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.platform})
                  ),
 
                 (
                     'status/devices',
-                    lambda: (CODE_OK, MIME_TEXT, self.devices)
+                    lambda: (CODE_OK, MIME_TEXT, {'success' : True, 'res' : self.devices})
                 ),
          )
 
