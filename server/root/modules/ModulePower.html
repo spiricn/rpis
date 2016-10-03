@@ -17,10 +17,9 @@ vals = (
 <%include file="../Header.html" args="headerTitle='Power'"/>
 
 <script>
-
 app.controller('PowerCtrl', function($scope, $http, $mdDialog){
     $scope.shutdown = function() {
-        $http.get('rest/power/shutdown').
+        $http.get('rest/power/shutdown?delayMs=2000').
             success(function(data) {
             
                 $mdDialog.show(
@@ -28,7 +27,7 @@ app.controller('PowerCtrl', function($scope, $http, $mdDialog){
                     .parent(angular.element(document.querySelector('#popupContainer')))
                     .clickOutsideToClose(true)
                     .title('Alert')
-                    .textContent('System will shutdown in ' + data + ' seconds')
+                    .textContent('System will shutdown in ' + data.res + ' seconds')
                     .ariaLabel('Alert Dialog Demo')
                     .ok('Got it!')
                 );
@@ -37,20 +36,38 @@ app.controller('PowerCtrl', function($scope, $http, $mdDialog){
     }
     
     $scope.reboot = function() {
-        $http.get('rest/power/reboot').
+        $http.get('rest/power/reboot?delayMs=2000').
             success(function(data) {
                     $mdDialog.show(
                   $mdDialog.alert()
                     .parent(angular.element(document.querySelector('#popupContainer')))
                     .clickOutsideToClose(true)
                     .title('Alert')
-                    .textContent('System will reboot in ' + data + ' seconds')
+                    .textContent('System will reboot in ' + data.res + ' seconds')
                     .ariaLabel('Alert Dialog Demo')
                     .ok('Got it!')
                 );
                      
             });
     }
+    
+    $scope.stop = function() {
+        $http.get('rest/power/stop?delayMs=2000').
+            success(function(data) {
+                    $mdDialog.show(
+                  $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Alert')
+                    .textContent('Server will stop in ' + data.res + ' seconds')
+                    .ariaLabel('Alert Dialog Demo')
+                    .ok('Got it!')
+                );
+                     
+            });
+    }
+    
+    
 })
 
 </script>
@@ -60,6 +77,8 @@ app.controller('PowerCtrl', function($scope, $http, $mdDialog){
 <md-button ng-click="reboot()" class="md-raised md-primary">Reboot</md-button>
 
 <md-button ng-click="shutdown()" class="md-raised md-primary">Shutdown</md-button>
+
+<md-button ng-click="stop()" class="md-raised md-primary">Stop</md-button>
 
 </div>
 
