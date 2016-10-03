@@ -39,3 +39,7 @@ class CycleProc(ProcBase):
 
         if not self.pc.setRGB(r, g, b):
             return True
+
+        done = not self._running
+
+        return done

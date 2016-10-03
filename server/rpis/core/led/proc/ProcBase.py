@@ -5,6 +5,11 @@ import time
 class ProcBase:
     def __init__(self):
         self._threaded = True
+        self._running = True
+
+    @property
+    def running(self):
+        return self._running
 
     @property
     def parent(self):
@@ -50,6 +55,9 @@ class ProcBase:
             self._thread.start()
         else:
             self.onProcStart()
+
+    def stop(self):
+        self._running = False
 
     def wait(self):
         if self._threaded:

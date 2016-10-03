@@ -46,4 +46,4 @@ class ColorSetProc(ProcBase):
 
         self.pc.setRGB(currColor.r, currColor.g, currColor.b)
 
-        return done
+        return done if self.running else True

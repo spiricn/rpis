@@ -75,7 +75,11 @@ class App(cmd.Cmd):
         return self._shutdown()
 
     def do_stop(self, arg):
-        return self._shutdown()
+        if not self._ctrl.currProc:
+            logger.error('no active process')
+            return
+
+        self._ctrl.currProc.stop()
 
     def do_EOF(self, arg):
         return self._shutdown()

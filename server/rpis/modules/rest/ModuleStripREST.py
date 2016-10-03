@@ -21,6 +21,16 @@ class ModuleStripREST(ModuleStrip):
                 ),
 
                 (
+                    'strip/cycle',
+                    self.cycleRest
+                ),
+
+                (
+                    'strip/stopProcess',
+                    self.stopProcesRest
+                ),
+
+                (
                     'strip/color/set',
                     self.setColorREST
                 ),
@@ -38,12 +48,18 @@ class ModuleStripREST(ModuleStrip):
 
                 (
                     'strip/poweredOn',
-                    lambda: (CODE_OK, MIME_JSON, self.poweredOnRest())
+                    self.poweredOnRest
                 ),
          )
 
+    def stopProcesRest(self):
+        return (CODE_OK, MIME_JSON, {'success' : self.stopProcess() })
+
+    def cycleRest(self):
+        return (CODE_OK, MIME_JSON, {'success' : self.cycle() })
+
     def poweredOnRest(self):
-        return {'success' : True, 'res': self.poweredOn}
+        return (CODE_OK, MIME_JSON, {'success' : True, 'res': self.poweredOn})
 
     def getColorRest(self):
         return (CODE_OK, MIME_JSON, {'success' : True, 'res' :self._colorToJson(self.getColor())})

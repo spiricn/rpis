@@ -23,6 +23,11 @@ class StripController():
         self._running = False
         self._state = STATE_INVALID
         self._pc = PinController()
+        self._currProc = None
+
+    @property
+    def currProc(self):
+        return self._currProc
 
     @property
     def pc(self):
@@ -75,8 +80,10 @@ class StripController():
                     item.cb(res)
 
     def _runProc(self, proc):
+        self._currProc = proc
         proc.start(self)
         proc.wait()
+        self._currProc = None
 
     def _setState(self, state):
         logger.debug('Changing state: %d -> %d', self._state, state)

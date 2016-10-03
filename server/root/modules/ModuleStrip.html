@@ -55,7 +55,19 @@ app.controller('StripCtrl', function($scope, $http, $log) {
               success(function(data) {
           });
     }
+
+    $scope.startCycle = function() {
+        $http.get('rest/strip/cycle').
+              success(function(data) {
+        });
+    }
     
+    $scope.stopProcess = function() {
+        $http.get('rest/strip/stopProcess').
+              success(function(data) {
+        });
+    }   
+     
     $scope.getPower();
     $scope.getColor();
 })
@@ -70,6 +82,10 @@ app.controller('StripCtrl', function($scope, $http, $log) {
   <h2>Power</p>
   <md-switch ng-model="poweredOn"  ng-change='updatePower()' aria-label="Switch 1"></md-switch>
 </div>
+
+<!-- ############################################################################# -->
+<hr/>
+<!-- ############################################################################# -->
 
 <div>
 
@@ -94,7 +110,6 @@ app.controller('StripCtrl', function($scope, $http, $log) {
   </md-input-container>
   
 </md-slider-container>
-    
 <md-slider-container flex="">
   <md-input-container>
     <input flex="" type="number" ng-model="color.value" aria-label="Value" aria-controls="volume-slider" >
@@ -106,7 +121,12 @@ app.controller('StripCtrl', function($scope, $http, $log) {
 
 </div>
 
+<!-- ############################################################################# -->
+<hr/>
+<!-- ############################################################################# -->
 
+<md-button ng-click="startCycle()" class="md-raised md-primary">Start cycle</md-button>
+<md-button ng-click="stopProcess()" class="md-raised md-primary">Stop process</md-button>
 </div>
     
 <%include file="../Footer.html"/>
