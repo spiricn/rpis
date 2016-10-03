@@ -56,8 +56,7 @@ class StripController():
 
         self._running = True
 
-        self._thread = Thread(target=self.run)
-        self._thread.setName('StripControllerLoop')
+        self._thread = Thread(target=self.run, name='StripControllerLoop')
         self._thread.start()
 
     ############################################################################

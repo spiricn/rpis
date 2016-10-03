@@ -30,7 +30,7 @@ class ModuleStrip(Module):
         logger.debug('powering off')
         self._powered = False
 
-        self._ctrl.term()
+        self._ctrl.term(blocking=True)
 
         return True
 
