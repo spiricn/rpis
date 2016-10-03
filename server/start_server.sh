@@ -7,7 +7,7 @@ main () {
 
     $root/run.sh rpis/app/App.py "$@"
 
-    return $
+    return $?
 }
 
 main "$@"
