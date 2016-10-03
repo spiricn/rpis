@@ -1,24 +1,33 @@
+from collections import namedtuple
+
 from rpis.core.Color import Color
 from rpis.core.led.proc.ProcBase import ProcBase
-from collections import namedtuple
 
 
 ColorKeyFrame = namedtuple('KeyFrame', 'color, time')
 
 class ColorSetProc(ProcBase):
-    def __init__(self, keyframes):
+    def __init__(self, keyframes, loop, timeScale=1.0):
         ProcBase.__init__(self)
 
         self._keyframes = keyframes
-
+        self._loop = loop
+        self._timeScale = timeScale
 
     def getResult(self):
         return True
 
     def onProcStart(self):
-        self.startMainLoop()
+        self.startMainLoop(self._timeScale)
+
+    @property
+    def animationDur(self):
+        return self._keyframes[-1].time
 
     def _findFrames(self, currTime):
+        if self._loop:
+            currTime = currTime % self.animationDur
+
         for index, frame in enumerate(self._keyframes):
             nextFrame = None if index == len(self._keyframes) - 1 else self._keyframes[index + 1]
 

@@ -50,7 +50,21 @@ class ModuleStripREST(ModuleStrip):
                     'strip/poweredOn',
                     self.poweredOnRest
                 ),
+
+                (
+                 'strip/runPrefab',
+                 self.runPrefabRest
+
+                 )
          )
+
+    def runPrefabRest(self, **kwargs):
+        prefabId = kwargs.pop('id', None)
+        if not prefabId:
+            return (CODE_BAD_REQUEST, MIME_TEXT, "Invalid prefab name");
+        prefabId = prefabId[0]
+
+        return (CODE_OK, MIME_JSON, {'success' : self.runPrefab(int(prefabId))})
 
     def stopProcesRest(self):
         return (CODE_OK, MIME_JSON, {'success' : self.stopProcess() })
@@ -66,9 +80,7 @@ class ModuleStripREST(ModuleStrip):
 
     @staticmethod
     def _colorToJson(color):
-        h, s, v = color.toHSV()
-
-        return {'hue' : h, 'saturation': s, 'value' : v}
+        return {'hue' : color.h, 'saturation': color.s, 'value' : color.v}
 
     def setColorREST(self, **kwargs):
         h = kwargs.pop('h', None)
@@ -85,6 +97,6 @@ class ModuleStripREST(ModuleStrip):
             logger.error('Invalid color argument provided: %r' % str(e))
             return (CODE_BAD_REQUEST, MIME_TEXT, 'Invalid color argument provided: %r' % str(e))
 
-        self.setColor(Color.fromHSV(h, s, v))
+        self.setColor(Color(h, s, v))
 
         return (CODE_OK, MIME_JSON, {'success' : True})

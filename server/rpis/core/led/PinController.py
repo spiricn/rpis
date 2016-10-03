@@ -39,7 +39,8 @@ class PinController():
 
         self._initialized = True
 
-        clr = Color.fromHSV(0.5, 1.0, 1.0)
+        clr = Color(0.5, 1.0, 1.0)
+
         self.setRGB(clr.r, clr.g, clr.b)
 
         logger.debug('initialized OK')

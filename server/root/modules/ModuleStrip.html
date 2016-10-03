@@ -56,8 +56,8 @@ app.controller('StripCtrl', function($scope, $http, $log) {
           });
     }
 
-    $scope.startCycle = function() {
-        $http.get('rest/strip/cycle').
+    $scope.startPrefab= function(id) {
+        $http.get('rest/strip/runPrefab?id=' + id).
               success(function(data) {
         });
     }
@@ -65,6 +65,7 @@ app.controller('StripCtrl', function($scope, $http, $log) {
     $scope.stopProcess = function() {
         $http.get('rest/strip/stopProcess').
               success(function(data) {
+                $scope.getColor();
         });
     }   
      
@@ -125,8 +126,13 @@ app.controller('StripCtrl', function($scope, $http, $log) {
 <hr/>
 <!-- ############################################################################# -->
 
-<md-button ng-click="startCycle()" class="md-raised md-primary">Start cycle</md-button>
-<md-button ng-click="stopProcess()" class="md-raised md-primary">Stop process</md-button>
+
+%for prefab in REngine.moduleManager.get('Strip').prefabs:
+<md-button ng-click="startPrefab(${prefab.id})" class="md-raised md-primary">${prefab.name}</md-button>
+%endfor
+
+<md-button ng-click="stopProcess()" class="md-raised md-primary">Stop prefab</md-button>
+
 </div>
     
 <%include file="../Footer.html"/>

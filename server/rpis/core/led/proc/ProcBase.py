@@ -19,9 +19,9 @@ class ProcBase:
     def pc(self):
         return self.parent.pc
 
-    def startMainLoop(self):
+    def startMainLoop(self, timeScale=1.0):
         self._loopStartTime = time.time()
-
+        self._timeScale = timeScale
         lastTime = None
 
         while True:
@@ -29,7 +29,7 @@ class ProcBase:
 
             dt = currTime - (lastTime if lastTime else self._loopStartTime)
 
-            if self.mainLoop(dt):
+            if self.mainLoop(dt * timeScale):
                 break
 
             lastTime = currTime
@@ -39,7 +39,7 @@ class ProcBase:
 
     @property
     def loopDuration(self):
-        return time.time() - self._loopStartTime
+        return (time.time() - self._loopStartTime) * self._timeScale
 
     def onProcStart(self):
         raise NotImplementedError()
@@ -63,3 +63,4 @@ class ProcBase:
         if self._threaded:
             self._thread.join()
         return self.getResult()
+

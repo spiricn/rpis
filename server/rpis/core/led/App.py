@@ -7,6 +7,7 @@ from rpis.core.Color import Color
 from rpis.core.led.StripController import StripController
 from rpis.core.led.proc.ColorSetProc import ColorSetProc, ColorKeyFrame
 from rpis.core.led.proc.CycleProc import CycleProc
+from rpis.core.led.proc.Prefabs import prefabs
 
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,25 @@ class App(cmd.Cmd):
                                [ColorKeyFrame(self._ctrl.pc.getRGB(), 0),
                                 ColorKeyFrame(Color(0, 0, 0), 1.5)]
                               ))
+
+    def do_printPrefabs(self, arg):
+        for index, name in enumerate(prefabs.keys()):
+            logger.debug('%d. %s' % (index, name))
+
+    def do_prefab(self, arg):
+        try:
+            prefab = int(arg)
+        except Exception as e:
+            logger.error(str(e))
+            return
+
+        key = list(prefabs.keys())[prefab]
+
+        process = prefabs[key]()
+
+        logger.debug('Running: %r' % key)
+
+        self._ctrl.runProcess(process)
 
     def do_set(self, arg):
         args = tokenize(arg)

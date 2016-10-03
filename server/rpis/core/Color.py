@@ -1,17 +1,19 @@
 import colorsys
 
 from rpis.core.Utils import lerp
+from builtins import staticmethod
 
 
 class Color:
-    COMP_RED, COMP_GREEN, COMP_BLUE = range(3)
+    COMP_HUE, COMP_SATURATION, COMP_VALUE, \
+    COMP_RED, COMP_GREEN, COMP_BLUE = range(6)
 
-    def __init__(self, r=0.0, g=0.0, b=0.0):
+    def __init__(self, h=0.0, s=0.0, v=0.0):
         self._val = [0.0, 0.0, 0.0]
 
-        self.setComp(self.COMP_RED, r)
-        self.setComp(self.COMP_GREEN, g)
-        self.setComp(self.COMP_BLUE, b)
+        self.setComp(self.COMP_HUE, float(h))
+        self.setComp(self.COMP_SATURATION, float(s))
+        self.setComp(self.COMP_VALUE, float(v))
 
     def setComp(self, comp, val):
         if isinstance(val, int):
@@ -27,42 +29,62 @@ class Color:
         else:
             raise RuntimeError('Invalid component %d value %s' % (comp, str(val)))
 
-        self._val[comp] = val
+        if comp in [self.COMP_RED, self.COMP_GREEN, self.COMP_BLUE]:
+            rgb = self.toRGB()
+
+            rgb[comp - self.COMP_RED] = val
+
+            r, g, b = rgb
+
+            self._val = Color.fromRGB(r, g, b)._val
+
+        else:
+            self._val[comp] = val
+
+    @property
+    def h(self):
+        return self._val[self.COMP_HUE]
+
+    @property
+    def s(self):
+        return self._val[self.COMP_SATURATION]
+
+    @property
+    def v(self):
+        return self._val[self.COMP_VALUE]
 
     @property
     def r(self):
-        return self._val[self.COMP_RED]
+        return self.toRGB()[0]
 
     @property
     def g(self):
-        return self._val[self.COMP_GREEN]
+        return self.toRGB()[1]
 
     @property
     def b(self):
-        return self._val[self.COMP_BLUE]
-
-    def toHSV(self):
-        return colorsys.rgb_to_hsv(self.r, self.g, self.b)
+        return self.toRGB()[2]
 
     @staticmethod
-    def fromHSV(h, s, v):
-        r, g, b = colorsys.hsv_to_rgb(h, s, v)
+    def fromRGB(r, g, b):
+        h, s, v = colorsys.rgb_to_hsv(r, g, b)
 
-        return Color(r, g, b)
+        return Color(h, s, v)
+
+    def toRGB(self):
+        return list(colorsys.hsv_to_rgb(self._val[0], self._val[1], self._val[2]))
 
     @staticmethod
     def lerp(start, end, a):
-        startHSV = start.toHSV()
-        endHSV = end.toHSV()
+        res = []
 
-        currHsv = []
-        for i in range(len(startHSV)):
-            currHsv.append(lerp(startHSV[i], endHSV[i], a))
+        for i in range(len(start._val)):
+            res.append(lerp(start._val[i], end._val[i], a))
 
-        h, s, v = currHsv
+        h, s, v = res
 
-        return Color.fromHSV(h, s, v)
+        return Color(h, s, v)
 
     def __str__(self):
-        return 'Color(%.2f, %.2f, %.2f)' % (self.r, self.g, self.b)
+        return 'Color(%.2f, %.2f, %.2f)' % (self.h, self.s, self.v)
 
