@@ -7,7 +7,7 @@ from rpis.core.Color import Color
 from rpis.core.led.StripController import StripController
 from rpis.core.led.proc.ColorSetProc import ColorSetProc, ColorKeyFrame
 from rpis.core.led.proc.CycleProc import CycleProc
-from rpis.core.led.proc.Prefabs import prefabs
+from rpis.core.led.proc.Prefabs import Prefabs
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +22,7 @@ class App(cmd.Cmd):
         self._ctrl = StripController()
         self._ctrl.startController()
         self._ctrl.init(True)
+        self._prefabs = Prefabs()
 
     def do_on(self, arg):
         self._ctrl.runProcess(ColorSetProc(
@@ -36,31 +37,31 @@ class App(cmd.Cmd):
                               ))
 
     def do_printPrefabs(self, arg):
-        for index, name in enumerate(prefabs.keys()):
-            logger.debug('%d. %s' % (index, name))
+        for index, prefab in enumerate(self._prefabs.prefabs):
+            logger.debug('%d. %s' % (index, prefab.name))
 
     def do_prefab(self, arg):
         try:
-            prefab = int(arg)
+            index = int(arg)
         except Exception as e:
             logger.error(str(e))
             return
 
-        key = list(prefabs.keys())[prefab]
+        prefab = self._prefabs.prefabs[index]
 
-        process = prefabs[key]()
+        process = prefab.spawn()
 
-        logger.debug('Running: %r' % key)
+        logger.debug('Running: %r' % prefab.name)
 
         self._ctrl.runProcess(process)
 
     def do_set(self, arg):
         args = tokenize(arg)
 
-        duration = 0.5
+        duration = 1.0
 
         try:
-            r, g, b = [int(i) for i in args[:3]]
+            h, s, v = [float(i) for i in args[:3]]
 
             if len(args) == 4:
                 duration = float(args[3])
@@ -69,12 +70,13 @@ class App(cmd.Cmd):
             logger.error(str(e))
             return False
 
-        self._ctrl.runProcess(ColorSetProc(Color(r, g, b), duration))
+        self._ctrl.runProcess(ColorSetProc([ColorKeyFrame(self._ctrl.pc.getRGB(), 0.0),
+                                            ColorKeyFrame(Color(h, s, v), duration)]))
 
     def do_flash(self, arg):
         self._ctrl.runProcess(ColorSetProc(
                        [ColorKeyFrame(Color(0, 0, 0), 0),
-                        ColorKeyFrame(Color(255, 255, 255), 0.1),
+                        ColorKeyFrame(Color(0, 0, 1.0), 0.1),
                         ColorKeyFrame(Color(0, 0, 0), 0.2)],
                       ))
 

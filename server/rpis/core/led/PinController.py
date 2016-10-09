@@ -1,3 +1,4 @@
+import copy
 import logging
 import sys
 
@@ -67,7 +68,7 @@ class PinController():
         return True
 
     def getRGB(self):
-        return self._color
+        return Color(self._color.h, self._color.s, self._color.v)
 
     def setRGB(self, r=None, g=None, b=None):
         if not self._initialized:

@@ -7,7 +7,7 @@ from rpis.core.led.proc.ProcBase import ProcBase
 ColorKeyFrame = namedtuple('KeyFrame', 'color, time')
 
 class ColorSetProc(ProcBase):
-    def __init__(self, keyframes, loop, timeScale=1.0):
+    def __init__(self, keyframes, loop=False, timeScale=1.0):
         ProcBase.__init__(self)
 
         self._keyframes = keyframes
@@ -46,6 +46,7 @@ class ColorSetProc(ProcBase):
         done = False
 
         start, end, a = self._findFrames(self.loopDuration)
+
 
         if start and end:
             currColor = Color.lerp(start, end, a)

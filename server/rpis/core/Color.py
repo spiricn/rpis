@@ -1,7 +1,8 @@
+from builtins import staticmethod
 import colorsys
+import math
 
 from rpis.core.Utils import lerp
-from builtins import staticmethod
 
 
 class Color:
@@ -17,10 +18,13 @@ class Color:
 
     def setComp(self, comp, val):
         if isinstance(val, int):
-            if val < 0 or val > 255:
+            maxValue = 255.0 if comp != self.COMP_HUE else 360.0
+
+            if val < 0 or val > maxValue:
                 raise RuntimeError('Invalid component %d value %d' % (comp, val))
 
-            val = val / 255.0
+
+            val = val / maxValue
 
         elif isinstance(val, float):
             if val < 0.0 or val > 1.0:
@@ -74,12 +78,33 @@ class Color:
     def toRGB(self):
         return list(colorsys.hsv_to_rgb(self._val[0], self._val[1], self._val[2]))
 
-    @staticmethod
-    def lerp(start, end, a):
+    @classmethod
+    def lerp(cls, start, end, a):
         res = []
 
         for i in range(len(start._val)):
-            res.append(lerp(start._val[i], end._val[i], a))
+            startVal = start._val[i]
+            endVal = end._val[i]
+
+            distance = abs(startVal - endVal)
+
+            if i == cls.COMP_HUE and distance > 0.5:
+                if startVal > 0.5:
+                    val = lerp(startVal, 1.0 + endVal, a)
+
+                else:
+                    val = lerp(startVal, -1.0 + endVal, a)
+
+                if val > 1.0:
+                    val -= 1.0
+                elif val < 0.0:
+                    val += 1.0
+
+            else:
+                val = lerp(startVal, endVal, a)
+
+
+            res.append(val)
 
         h, s, v = res
 
