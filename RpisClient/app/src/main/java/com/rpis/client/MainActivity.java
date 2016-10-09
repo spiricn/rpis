@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.AdapterViewFlipper;
 import android.widget.ViewFlipper;
 
+import com.rpis.client.device.DeviceFragment;
 import com.rpis.client.led.LedFragment;
 import com.rpis.client.locator.LocatorFragment;
 import com.rpis.client.navigator.NavigatorFragment;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity
         List<AControl> controlList = new ArrayList<AControl>();
 
         controlList.add(new LedFragment(mService));
+        controlList.add(new DeviceFragment(mService));
 
         addPage(mNavigatorPage = new NavigatorFragment(mService, controlList, new NavigatorFragment.IListener() {
             @Override

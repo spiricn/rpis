@@ -8,5 +8,7 @@ interface IDeviceControl {
 
 	RpisResult reboot(int delayMs);
 
+	RpisResult stopServer(int delayMs);
+
 	RpisResult ping();
 }

@@ -28,6 +28,12 @@ public class DeviceControl extends IDeviceControl.Stub {
     }
 
     @Override
+    public RpisResult stopServer(int delayMs){
+        return mPowerApi.parsedGet("stop?delayMs=" + delayMs) == null ? RpisResult.ERROR
+                : RpisResult.OK;
+    }
+
+    @Override
     public RpisResult ping() throws RemoteException {
         return mStatusApi.parsedGet("ping") == null ? RpisResult.ERROR : RpisResult.OK;
     }
