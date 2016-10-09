@@ -38,7 +38,7 @@ class Engine:
                                         tempfile.mkdtemp()
         )
 
-        self._broadcastListener = BroadcastListener(self._address, self.BROADCAST_PORT, self.RESPONSE_PORT)
+        self._broadcastListener = BroadcastListener(self._address, port, self.BROADCAST_PORT, self.RESPONSE_PORT)
         self._broadcastListener.start()
 
         self._server.addRestAPI()

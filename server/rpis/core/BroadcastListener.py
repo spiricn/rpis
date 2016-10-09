@@ -12,12 +12,13 @@ logger = logging.getLogger(__name__)
 class BroadcastListener(Thread):
     RPIS_LOCATOR_REQUEST = "RPIS.REQUEST.ADDRESS";
 
-    def __init__(self, address, broadcastPort, responsePort):
+    def __init__(self, address, serverPort, broadcastPort, responsePort):
         Thread.__init__(self)
 
         self._broadcastPort = broadcastPort
         self._responsePort = responsePort
         self._address = address
+        self._serverPort = serverPort
 
     @staticmethod
     def _generateAnnounceJSON(address, port):
@@ -58,7 +59,7 @@ class BroadcastListener(Thread):
             msg = data.decode('ascii')
 
             if msg == self.RPIS_LOCATOR_REQUEST:
-                data = self._generateAnnounceJSON(self._address, 80)
+                data = self._generateAnnounceJSON(self._address, self._serverPort)
 
                 responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 responseSocket.settimeout(2.0)
