@@ -3,10 +3,10 @@ import logging
 import socket
 from threading import Thread
 import time
-
+from uuid import getnode as get_mac
 import rpis
 
-
+import hashlib
 logger = logging.getLogger(__name__)
 
 class BroadcastListener(Thread):
@@ -20,15 +20,27 @@ class BroadcastListener(Thread):
         self._address = address
         self._serverPort = serverPort
 
-    @staticmethod
-    def _generateAnnounceJSON(address, port):
-        address = 'http://%s:%d' % (address, port)
+        uidStr = 'rpis:uid:' + str(get_mac()) + ':' + self._address + ':' + str(self._serverPort)
+
+        m = hashlib.md5()
+
+        m.update(uidStr.encode('ascii'))
+
+        self._uid = m.hexdigest()
+
+        logger.debug('generated uid: %r ( %r )' % (uidStr, self._uid))
+
+        self._announceJson = self.generateAnnounceJSON()
+
+    def generateAnnounceJSON(self):
+        address = 'http://%s:%d' % (self._address, self._serverPort)
 
         return json.dumps({
             'name' : 'rpis',
             'version' : rpis.__version__,
             'address' : address,
-            'rest' : address + '/rest'
+            'rest' : address + '/rest',
+            'uid' : self._uid
         }).encode('ascii')
 
     def stop(self):
@@ -59,13 +71,11 @@ class BroadcastListener(Thread):
             msg = data.decode('ascii')
 
             if msg == self.RPIS_LOCATOR_REQUEST:
-                data = self._generateAnnounceJSON(self._address, self._serverPort)
-
                 responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 responseSocket.settimeout(2.0)
 
                 try:
-                    responseSocket.sendto(data, (address, self._responsePort))
+                    responseSocket.sendto(self._announceJson, (address, self._responsePort))
                     logger.debug('Responded to %s:%d' % (address, self._responsePort))
                 except Exception as e:
                     logger.error('Error sending response to (%s:%d): %r' % (address, self._responsePort, str(e)))
