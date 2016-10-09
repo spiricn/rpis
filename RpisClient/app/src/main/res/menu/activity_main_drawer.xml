@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@drawable/ic_menu_send"
+            android:title="Servers"
+            android:id="@+id/nav_servers" />
+        <item
+            android:id="@+id/nav_controls"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Controls" />
+    </group>
+
+</menu>
