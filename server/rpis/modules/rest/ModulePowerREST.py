@@ -74,7 +74,7 @@ class ModulePowerREST(ModulePower):
             except TypeError:
                 return (CODE_BAD_REQUEST, MIME_TEXT, 'Invalid delay argument provided')
 
-        logger.debug('shutting down in %d ms' % self.delayMs)
+        logger.debug('shutting down in %d ms' % delayMs)
 
         Timer(delayMs / 1000.0, self.shutdown).start()
 
