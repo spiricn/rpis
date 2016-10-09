@@ -54,9 +54,22 @@ class ModuleStripREST(ModuleStrip):
                 (
                  'strip/runPrefab',
                  self.runPrefabRest
+                 )
+                ,
 
+                (
+                 'strip/getPrefabs',
+                 self.getPrefabsRest
                  )
          )
+
+    def getPrefabsRest(self, **kwargs):
+        prefabs = []
+
+        for i in self.prefabs:
+            prefabs.append({'id' : i.id, 'name' : i.name})
+
+        return (CODE_OK, MIME_JSON, {'success' : True, 'res' : prefabs })
 
     def runPrefabRest(self, **kwargs):
         prefabId = kwargs.pop('id', None)
