@@ -13,10 +13,72 @@ vals = (
 %>
 
 
+
 <html ng-app="rpis">
 
 
 <%include file="../Header.html" args="headerTitle='Status'"/>
+
+
+
+<script>
+
+
+app.controller('StatusCtrl', function($scope, $http, $timeout) {
+    // Function to get the data
+    $scope.getData = function(){
+      $http.get('rest/status/temperature').
+          success(function(data) {
+            $scope.temperature = data.res + " C";
+      });
+      $http.get('rest/status/upTime').
+          success(function(data) {
+              $scope.upTime = data.res;
+      });
+      $http.get('rest/status/memoryUsage').
+          success(function(data) {
+              $scope.memoryUsage = data.res.free + ' B / ' + data.res.total + ' B ( ' + ((data.res.free/data.res.total)*100.0).toFixed(2) + ' % )'
+      });
+      $http.get('rest/status/ipAddress').
+          success(function(data) {
+              $scope.ipAddress = data.res;
+      });
+      $http.get('rest/status/cpuUsage').
+          success(function(data) {
+              $scope.cpuUsage = data.res + '%';
+      });
+      $http.get('rest/status/platform').
+          success(function(data) {
+              $scope.platform = data.res;
+      });
+      $http.get('rest/status/devices').
+          success(function(data) {
+          if(data.success){
+                var res = '';
+                for(var i=0; i<data.res.devices.length; i++){
+                    res += data.res.devices[i] + '\n';
+                }
+                $scope.devices = res;
+            }
+      });
+    };
+    
+    $scope.getData();
+  
+    // Function to replicate setInterval using $timeout service.
+    $scope.intervalFunction = function(){
+        $timeout(function() {
+            $scope.getData();
+            $scope.intervalFunction();
+        }, 3000)
+    };
+    
+    // Kick off the interval
+    $scope.intervalFunction();
+})
+
+
+</script>
 
 <md-content>
     <md-list  ng-controller='StatusCtrl'>

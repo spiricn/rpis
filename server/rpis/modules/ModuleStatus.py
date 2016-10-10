@@ -142,7 +142,7 @@ class ModuleStatus(Module):
         if res.rc != 0:
             return None
 
-        return res.stdout.decode('ascii')
+        return res.stdout.decode('ascii').strip()
 
     @property
     def devices(self):
