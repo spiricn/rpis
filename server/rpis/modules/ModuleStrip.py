@@ -18,6 +18,8 @@ class ModuleStrip(Module):
         self._ctrl.startController()
         self._prefabs = Prefabs()
 
+        self._prefabs.fromManifest(self.manager.engine.config.prefabs)
+
     @property
     def prefabs(self):
         return self._prefabs.prefabs

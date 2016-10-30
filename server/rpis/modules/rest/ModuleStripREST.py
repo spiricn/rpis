@@ -1,6 +1,7 @@
 import logging
 
 from ssc.http.HTTP import CODE_OK, MIME_TEXT, CODE_BAD_REQUEST, MIME_JSON
+from ssc.servlets.RestServlet import RestHandler
 
 from rpis.core.Color import Color
 from rpis.modules.ModuleStrip import ModuleStrip
@@ -15,49 +16,49 @@ class ModuleStripREST(ModuleStrip):
 
     def getRestAPI(self):
         return (
-                (
+                RestHandler(
                     'strip/color',
                     self.getColorRest
                 ),
 
-                (
+                RestHandler(
                     'strip/cycle',
                     self.cycleRest
                 ),
 
-                (
+                RestHandler(
                     'strip/stopProcess',
                     self.stopProcesRest
                 ),
 
-                (
+                RestHandler(
                     'strip/color/set',
                     self.setColorREST
                 ),
 
-                (
+                RestHandler(
                     'strip/powerOn',
                     lambda: (CODE_OK, MIME_JSON, {'success': self.powerOn()})
                 ),
 
-                (
+                RestHandler(
                     'strip/powerOff',
                     lambda: (CODE_OK, MIME_JSON, {'success': self.powerOff()})
                 ),
 
 
-                (
+                RestHandler(
                     'strip/poweredOn',
                     self.poweredOnRest
                 ),
 
-                (
+                RestHandler(
                  'strip/runPrefab',
                  self.runPrefabRest
                  )
                 ,
 
-                (
+                RestHandler(
                  'strip/getPrefabs',
                  self.getPrefabsRest
                  )

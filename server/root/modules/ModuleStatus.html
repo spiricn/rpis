@@ -24,7 +24,7 @@ vals = (
 <script>
 
 
-app.controller('StatusCtrl', function($scope, $http, $timeout) {
+app.controller('StatusCtrl', function($scope, $http, $timeout, $log) {
     // Function to get the data
     $scope.getData = function(){
       $http.get('rest/status/temperature').
@@ -63,7 +63,7 @@ app.controller('StatusCtrl', function($scope, $http, $timeout) {
       });
     };
     
-    $scope.getData();
+  	 $scope.getData();
   
     // Function to replicate setInterval using $timeout service.
     $scope.intervalFunction = function(){
@@ -75,13 +75,53 @@ app.controller('StatusCtrl', function($scope, $http, $timeout) {
     
     // Kick off the interval
     $scope.intervalFunction();
+    
+    $scope.logText = ""
+    $scope.oReq = new XMLHttpRequest();
+    $scope.oReq.last_index = 0
+	$scope.oReq.onreadystatechange = function() {
+		if (this.readyState > 2) {
+			var curr_index = this.responseText.length;
+			if(this.last_index == curr_index){
+				return;
+			} 
+		   
+		   chunk = this.responseText.substring(this.last_index, curr_index);
+		   this.last_index = curr_index;
+		   
+		   lines = chunk.split('\n') 
+		   
+		   for(i=0; i<lines.length; i++){
+		   		line = lines[i];
+		   		
+		   		if(line){
+					$scope.logText += line + "\n";
+				}
+		   }
+		}
+	};
+	$scope.oReq.open("get", "/rest/status/log", true);
+	$scope.oReq.send();
 })
 
 
 </script>
 
+<div ng-controller='StatusCtrl'>
+
+
+<md-input-container class="md-block">
+    <label>Log</label>
+    <textarea ng-model="logText" rows="5" md-select-on-focus></textarea>
+  </md-input-container>
+    
+
+</div>
+
 <md-content>
     <md-list  ng-controller='StatusCtrl'>
+    
+    
     
 %for name, val in vals:
       

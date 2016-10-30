@@ -23,6 +23,11 @@ class RestApi:
         return res
 
 class Locator:
+    BROADCAST_SOCKET = 13099
+    RESPONSE_SOCKET = BROADCAST_SOCKET - 1
+    BROADCAST_ADDR = '255.255.255.255'
+    LOCATOR_REQUEST = "RPIS.REQUEST.ADDRESS";
+
     def __init__(self):
         pass
 
@@ -30,11 +35,12 @@ class Locator:
         senderSocket = socket(AF_INET, SOCK_DGRAM)
         senderSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         senderSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-        senderSocket.sendto('RPIS.REQUEST.ADDRESS'.encode('ascii'), ('192.255.255.255', 13099))
+        senderSocket.sendto(self.LOCATOR_REQUEST.encode('ascii'), (self.BROADCAST_ADDR, self.BROADCAST_SOCKET))
         print('sent')
 
         receiverSocket = socket(AF_INET, SOCK_DGRAM)
-        receiverSocket.bind(('', 13098))
+
+        receiverSocket.bind(('', self.RESPONSE_SOCKET))
 
         data, server = receiverSocket.recvfrom(1024)
 

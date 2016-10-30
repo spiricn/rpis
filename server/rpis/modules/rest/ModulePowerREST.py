@@ -2,6 +2,7 @@ import logging
 from threading import Timer
 
 from ssc.http.HTTP import CODE_OK, MIME_TEXT, MIME_JSON, CODE_BAD_REQUEST
+from ssc.servlets.RestServlet import RestHandler
 
 from rpis.modules.ModulePower import ModulePower
 
@@ -16,17 +17,17 @@ class ModulePowerREST(ModulePower):
 
     def getRestAPI(self):
         return (
-                (
+                RestHandler(
                     'power/shutdown',
                     self.shutdownREST
                 ),
 
-                (
+                RestHandler(
                     'power/reboot',
                     self.rebootREST
                 ),
 
-                (
+                RestHandler(
                  'power/stop',
                  self.stopREST
                  )

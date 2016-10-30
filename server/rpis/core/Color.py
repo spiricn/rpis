@@ -9,12 +9,34 @@ class Color:
     COMP_HUE, COMP_SATURATION, COMP_VALUE, \
     COMP_RED, COMP_GREEN, COMP_BLUE = range(6)
 
-    def __init__(self, h=0.0, s=0.0, v=0.0):
+    def __init__(self, *args):
         self._val = [0.0, 0.0, 0.0]
 
-        self.setComp(self.COMP_HUE, float(h))
-        self.setComp(self.COMP_SATURATION, float(s))
-        self.setComp(self.COMP_VALUE, float(v))
+        if len(args) == 3:
+            h, s, v = args
+
+            self.setComp(self.COMP_HUE, float(h))
+            self.setComp(self.COMP_SATURATION, float(s))
+            self.setComp(self.COMP_VALUE, float(v))
+
+        elif len(args) == 1:
+            obj = args[0]
+
+            if isinstance(obj, str):
+                if obj.startswith('#') and len(obj) == 3 * 2:
+                    obj = obj[1:]
+                elif len(obj) != 3 * 2:
+                    raise RuntimeError('Unable to parse color string %r' % obj)
+
+                self.setComp(self.COMP_RED, int(obj[0:2], 16))
+                self.setComp(self.COMP_GREEN, int(obj[2:4], 16))
+                self.setComp(self.COMP_BLUE, int(obj[4:6], 16))
+
+            else:
+                raise RuntimeError('Unable to parse color string %r' % obj)
+
+        elif args:
+            raise RuntimeError('Unrecognized argument list %r' % str(args))
 
     def setComp(self, comp, val):
         if isinstance(val, int):

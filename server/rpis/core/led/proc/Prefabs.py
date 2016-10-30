@@ -9,26 +9,18 @@ class Prefabs:
         self._id = 0
         self._prefabs = {}
 
-        self.add('Slow Blue Loop', lambda: ColorSetProc(
-           [ColorKeyFrame(Color(0.4, 1, 1), 0),
-            ColorKeyFrame(Color(0.7, 1, 1), 3),
-            ColorKeyFrame(Color(0.4, 1, 1), 6),
-            ColorKeyFrame(Color(0.7, 1, 0.5), 14),
-            ColorKeyFrame(Color(0.4, 1, 0.2), 20),
-            ColorKeyFrame(Color(0.8, 1, 1), 25),
-            ColorKeyFrame(Color(0.4, 1, 1), 30),
-            ], True))
+    def fromManifest(self, manifest):
+        for name, desc in manifest.items():
+            duration = float(desc['duration'])
+            colors = desc['colors']
+            currTime = 0
 
-        self.add('Flash', lambda: ColorSetProc(
-           [ColorKeyFrame(Color(0, 0, 0), 0),
-            ColorKeyFrame(Color(0, 0, 1), 0.2),
-            ColorKeyFrame(Color(0, 0, 0), 4),
-            ], False))
+            keyframes = []
+            for color in colors:
+                keyframes.append(ColorKeyFrame(Color(color), currTime))
 
-        self.add('Cycle', lambda: ColorSetProc(
-           [ColorKeyFrame(Color(0, 1, 1), 0),
-            ColorKeyFrame(Color(1, 1, 1), 5),
-            ], True, timeScale=0.1))
+                currTime += duration
+            self.add(name, lambda: ColorSetProc(keyframes, True))
 
     def add(self, name, spawn):
         self._id += 1
