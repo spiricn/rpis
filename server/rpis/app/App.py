@@ -1,32 +1,25 @@
 import argparse
-import logging
+import os
 import sys
 
 from rpis.core.Engine import Engine
 
+DEFAULT_CONFIG_FILE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../Config.py'))
 
 def programMain():
-    # Initialize logging
-    logging.basicConfig(level=logging.DEBUG,
-            format='%(levelname)s/%(name)s: %(message)s')
-
-    logger = logging.getLogger(__name__)
-
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--port', help='HTTP server port')
+    parser.add_argument('--configFile', help='Configuration file')
 
     args = parser.parse_args()
 
-    port = int(args.port) if args.port else 13097
+    configFilePath = args.configFile if args.configFile else DEFAULT_CONFIG_FILE_PATH
 
-    engine = Engine(port)
+    engine = Engine(configFilePath)
 
     engine.start()
 
     res = engine.wait()
-
-    logger.debug('app exited with %d' % res)
 
     return res
 

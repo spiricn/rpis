@@ -1,3 +1,4 @@
+from logging import Formatter
 import logging
 import os
 import tempfile
@@ -6,8 +7,11 @@ from time import sleep
 from ssc.servlets.ServletContainer import ServletContainer
 from ssc.utils.Utils import getLocalIp
 
+from rpis.app.LoggingHandler import LoggingHandler
+from rpis.core.AttributeDict import AttributeDict
 from rpis.core.BroadcastListener import BroadcastListener
 from rpis.core.ModuleManager import ModuleManager
+from rpis.core.UpdatingFileReader import UpdatingFileReader
 from rpis.modules.ModuleREST import ModuleREST
 from rpis.modules.rest.ModulePowerREST import ModulePowerREST
 from rpis.modules.rest.ModuleStatusREST import ModuleStatusREST
@@ -24,21 +28,28 @@ class Engine:
         ModuleREST
     )
 
-    BROADCAST_PORT = 13099
-    RESPONSE_PORT = BROADCAST_PORT - 1
+    def __init__(self, configFilePath):
+        serverRoot = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 
-    def __init__(self, port):
+        rootLogger = logging.getLogger()
+        rootLogger.setLevel(logging.NOTSET)
+
+        self._logHandler = LoggingHandler(os.path.join(serverRoot, 'log.txt'))
+        rootLogger.addHandler(self._logHandler)
+        self._logHandler.setFormatter(Formatter('%(levelname)s/%(name)s: %(message)s'))
+
+        self._readConfig(configFilePath)
+
         self._address = getLocalIp()
 
         if not self._address:
             raise RuntimeError('Error getting local address %s' % str(self._address))
 
-
-        self._server = ServletContainer(self._address, port, os.path.join(os.path.dirname(__file__), '../../root'),
+        self._server = ServletContainer(self._address, self._config.port, os.path.join(serverRoot, 'root'),
                                         tempfile.mkdtemp()
         )
 
-        self._broadcastListener = BroadcastListener(self._address, port, self.BROADCAST_PORT, self.RESPONSE_PORT)
+        self._broadcastListener = BroadcastListener(self._address, self._config.port, self._config.announceBroadcastPort, self._config.announceResponsePort)
         self._broadcastListener.start()
 
         self._server.addRestAPI()
@@ -48,6 +59,28 @@ class Engine:
             self._moduleManager.registerModule(module)
 
         self._running = True
+
+    @property
+    def logHandler(self):
+        return self._logHandler
+
+    def _readConfig(self, configFilePath):
+        logger.debug('reading configuration from %r' % configFilePath)
+
+        configDict = {}
+
+        with open(configFilePath, 'r') as fileObj:
+            configCode = fileObj.read()
+
+            code = compile(configCode, configDict, 'exec')
+
+            exec(code, configDict)
+
+        self._config = AttributeDict(configDict)
+
+    @property
+    def config(self):
+        return self._config
 
     @property
     def rest(self):
