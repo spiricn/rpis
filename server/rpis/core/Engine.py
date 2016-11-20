@@ -45,7 +45,7 @@ class Engine:
         if not self._address:
             raise RuntimeError('Error getting local address %s' % str(self._address))
 
-        self._server = ServletContainer(self._address, self._config.port, os.path.join(serverRoot, 'root'),
+        self._server = ServletContainer('', self._config.port, os.path.join(serverRoot, 'root'),
                                         tempfile.mkdtemp()
         )
 

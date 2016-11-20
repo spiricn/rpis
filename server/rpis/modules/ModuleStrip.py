@@ -1,4 +1,5 @@
 import logging
+import time
 
 from rpis.core.Module import Module
 from rpis.core.led.StripController import StripController
@@ -20,6 +21,22 @@ class ModuleStrip(Module):
 
         self._prefabs.fromManifest(self.manager.engine.config.prefabs)
 
+        self._ctrl.init()
+
+        # Flash some colors to indicate startup
+        colors = [
+          (255, 0, 0, 'red'),
+          (0, 255, 0, 'green'),
+          (0, 0, 255, 'blue'),
+          (255, 255, 255, 'white'),
+          (0, 0, 0, 'black'),
+          ]
+
+        for r, g, b, name in colors:
+            logger.debug(name)
+            self._ctrl.setRGB(r, g, b, True)
+            time.sleep(0.5)
+
     @property
     def prefabs(self):
         return self._prefabs.prefabs
@@ -36,12 +53,12 @@ class ModuleStrip(Module):
 
         return True
 
-    def runPrefab(self, id):
+    def runPrefab(self, prefabId):
         if self._ctrl.currProc:
             logger.error('process running')
             return False
 
-        proc = self._prefabs.get(id).spawn()
+        proc = self._prefabs.get(prefabId).spawn()
 
         self._ctrl.runProcess(proc)
 

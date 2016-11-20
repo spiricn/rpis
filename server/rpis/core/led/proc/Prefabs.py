@@ -1,6 +1,8 @@
+from collections import namedtuple
+
 from rpis.core.Color import Color
 from rpis.core.led.proc.ColorSetProc import ColorSetProc, ColorKeyFrame
-from collections import namedtuple
+
 
 Prefab = namedtuple('Prefab', 'name, spawn, id')
 
@@ -27,8 +29,8 @@ class Prefabs:
 
         self._prefabs[self._id] = Prefab(name, spawn, self._id)
 
-    def get(self, id):
-        return self._prefabs[id]
+    def get(self, prefabId):
+        return self._prefabs[prefabId]
 
     @property
     def prefabs(self):
