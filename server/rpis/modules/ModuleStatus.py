@@ -4,6 +4,7 @@ import random
 import socket
 import sys
 
+from rpis.Config import Config
 from rpis.core.Module import Module
 from rpis.core.Utils import shellCommand
 
@@ -56,7 +57,7 @@ class ModuleStatus(Module):
 
     @property
     def temperature(self):
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return '%.1f' % (30 + random.random() * 10)
 
         res = shellCommand(['/opt/vc/bin/vcgencmd', 'measure_temp'])
@@ -68,7 +69,7 @@ class ModuleStatus(Module):
 
     @property
     def upTime(self):
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return 'n/a'
 
         res = shellCommand(['uptime', '-p'])
@@ -89,7 +90,7 @@ class ModuleStatus(Module):
 
     @property
     def memoryUsage(self):
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return MemoryInfo(1, 1)
 
         res = shellCommand(['cat', '/proc/meminfo'])
@@ -114,7 +115,7 @@ class ModuleStatus(Module):
 
     @property
     def cpuUsage(self):
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return random.randrange(0, 100)
 
         res = shellCommand(['top', '-d', '0.5', '-b' , '-n2'])
@@ -134,7 +135,7 @@ class ModuleStatus(Module):
 
     @property
     def platform(self):
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return 'win32'
 
         res = shellCommand(['uname', '-a'])
@@ -146,7 +147,7 @@ class ModuleStatus(Module):
 
     @property
     def devices(self):
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return {'devices' : ['dummy1', 'dummy2']}
 
         res = shellCommand(['lsusb'])

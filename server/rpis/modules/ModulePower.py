@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from rpis.Config import Config
 from rpis.core.Module import Module
 from rpis.core.Utils import shellCommand
 
@@ -14,7 +15,7 @@ class ModulePower(Module):
     def reboot(self):
         logger.debug('rebooting now')
 
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return
 
         res = shellCommand(['reboot'])
@@ -27,7 +28,7 @@ class ModulePower(Module):
     def shutdown(self):
         logger.debug('shutting down now')
 
-        if sys.platform == 'win32':
+        if not Config.rpiApi:
             return
 
         res = shellCommand(['poweroff'])

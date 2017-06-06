@@ -1,7 +1,6 @@
-import copy
 import logging
-import sys
 
+from rpis.Config import Config
 from rpis.core.Color import Color
 
 
@@ -35,7 +34,7 @@ class PinController():
             logger.error('already initialized')
             return False
 
-        if sys.platform != 'win32':
+        if Config.rpiApi:
             self._pi = pigpio.pi()
 
         self._initialized = True
@@ -58,7 +57,7 @@ class PinController():
 
         self.setRGB(0, 0, 0)
 
-        if sys.platform != 'win32':
+        if Config.rpiApi:
             self._pi.stop()
 
         self._initialized = False
@@ -97,7 +96,7 @@ class PinController():
                 logger.error('invalid pin value %d', val)
                 return False
 
-        if sys.platform != 'win32':
+        if Config.rpiApi:
             self._pi.set_PWM_dutycycle(pin, val)
 
         comp = {
