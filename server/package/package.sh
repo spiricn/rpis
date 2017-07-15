@@ -41,7 +41,8 @@ main() {
 
     # Create the manifest
     mkdir -p ${rootDir}/DEBIAN
-    cp control ${rootDir}/DEBIAN/control
+    cp -v control ${rootDir}/DEBIAN/control
+    cp -v postinst ${rootDir}/DEBIAN/postinst
 
     # Create the package
     dpkg-deb --build ${rootDir}

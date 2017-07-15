@@ -1,0 +1,4 @@
+systemctl daemon-reload
+
+# Make the service start at boot
+update-rc.d rpis defaults
