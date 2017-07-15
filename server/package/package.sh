@@ -10,6 +10,12 @@ main() {
     local installRoot=${rootDir}/usr/local/bin/rpis
     local projectRoot=`pwd`/..
 
+    # Create a binary
+    pyinstaller \
+        -F \
+        --hidden-import=ssc \
+        ${projectRoot}/rpis/app/App.py
+
     # Cleanup
     rm -fv ${packageName}
     rm -rfv ${rootDir}
@@ -18,14 +24,20 @@ main() {
     mkdir -p ${installRoot}
 
 
-    # Install
+    # Install main files
     cp -rv \
         ${projectRoot}/root \
         ${projectRoot}/default_config.py \
-        ${projectRoot}/run.sh \
-        ${projectRoot}/start_server.sh \
-        ${projectRoot}/rpis \
         ${installRoot}/
+
+    # Install service script
+    mkdir -p ${rootDir}/etc/init.d
+    cp -rv \
+        rpis.sh ${rootDir}/etc/init.d/rpis
+
+    cp -v \
+        `pwd`/dist/App \
+        ${installRoot}/rpis
 
     # Create the manifest
     mkdir -p ${rootDir}/DEBIAN
