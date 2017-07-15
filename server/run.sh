@@ -5,8 +5,7 @@ main() {
 
     local root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-    local ssc_path=$root/../../ssc
-    PYTHONPATH=$ssc_path:$root:$PYTHONPATH \
+    PYTHONPATH=$root:$PYTHONPATH \
         python3 $root/"$@"
 
     return $?
