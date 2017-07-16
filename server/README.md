@@ -1,4 +1,4 @@
-# RPIS
+# RPIS Server
 A Python3 / web-based Raspberry Pi Zero server used for LED strip lighting control.
 
 ## Dependencies
