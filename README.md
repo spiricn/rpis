@@ -1,4 +1,4 @@
 [Server README](server/README.md)
 
-[Client README](RpisClient/README.md)
+[Client README](client/README.md)
 
