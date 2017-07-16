@@ -53,7 +53,7 @@ main() {
     echo "Architecture: armhf" >> ${rootDir}/DEBIAN/control
     echo "Maintainer: Nikola Spiric <nikola.spiric.ns@gmail.com>" >> ${rootDir}/DEBIAN/control
     echo "Description: RPIS Server" >> ${rootDir}/DEBIAN/control
-    echo "Depends: pigpiod" >> ${rootDir}/DEBIAN/control
+    echo "Depends: pigpio" >> ${rootDir}/DEBIAN/control
 
     cp -v postinst ${rootDir}/DEBIAN/postinst
     chmod -v 0555 ${rootDir}/DEBIAN/postinst

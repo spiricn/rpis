@@ -6,7 +6,7 @@ A Python3 / web-based Raspberry Pi Zero server used for LED strip lighting contr
 * SSC ( https://github.com/spiricn/ssc )
   Used as a HTTP server backend library.
 
-* pigpiod ( http://abyz.co.uk/rpi/pigpio/download.html )
+* pigpio ( http://abyz.co.uk/rpi/pigpio/download.html )
  Native service used for PWM control of LED the strip.
 
 * PyInstaller ( http://www.pyinstaller.org/ )
