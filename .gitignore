@@ -1,0 +1,4 @@
+App.spec
+server/package/build
+server/package/dist
+server/package/rpis_*.*.*
