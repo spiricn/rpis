@@ -7,3 +7,6 @@
 /build
 /captures
 .externalNativeBuild
+app/src/main/bin/
+app/src/main/gen/
+app/src/main/project.properties
