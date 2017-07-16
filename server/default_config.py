@@ -10,4 +10,8 @@ announceBroadcastPort = 13099
 announceResponsePort = announceBroadcastPort - 1
 port = 13097
 
-
+ledStripPinout = {
+    'red' : 18,
+    'green' : 23,
+    'blue' : 24
+}

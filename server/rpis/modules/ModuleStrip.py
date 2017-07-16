@@ -15,7 +15,11 @@ class ModuleStrip(Module):
 
         self._powered = False
 
-        self._ctrl = StripController()
+        self._ctrl = StripController(
+            self.manager.engine.config.ledStripPinout['red'],
+            self.manager.engine.config.ledStripPinout['green'],
+            self.manager.engine.config.ledStripPinout['blue'])
+
         self._ctrl.startController()
         self._prefabs = Prefabs()
 

@@ -18,11 +18,11 @@ Command = namedtuple('Command', 'fnc, cb')
 class StripController():
     QUEUE_TIMEOUT_SEC = 1.0
 
-    def __init__(self):
+    def __init__(self, redPin, greenPin, bluePin):
         self._queue = Queue()
         self._running = False
         self._state = STATE_INVALID
-        self._pc = PinController()
+        self._pc = PinController(redPin, greenPin, bluePin)
         self._currProc = None
 
     @property

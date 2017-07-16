@@ -11,17 +11,16 @@ try:
 except ImportError:
     logger.warning('pigpio not supported on this platform')
 
-PIN_RED = 18
-PIN_GREEN = 23
-PIN_BLUE = 24
-
 MAX_PIN_BRIGHTNESS = 255
 
 class PinController():
-    def __init__(self):
+    def __init__(self, redPin, greenPin, bluePin):
         self._initialized = False
 
         self._color = Color()
+        self._redPin = redPin
+        self._greenPin = greenPin
+        self._bluePin = bluePin
 
     @property
     def initialized(self):
@@ -75,11 +74,11 @@ class PinController():
             return False
 
         if r != None:
-            self._setPinBrightness(PIN_RED, r)
+            self._setPinBrightness(self._redPin, r)
         if g != None:
-            self._setPinBrightness(PIN_GREEN, g)
+            self._setPinBrightness(self._greenPin, g)
         if b != None:
-            self._setPinBrightness(PIN_BLUE, b)
+            self._setPinBrightness(self._bluePin, b)
 
         return True
 
@@ -100,9 +99,9 @@ class PinController():
             self._pi.set_PWM_dutycycle(pin, val)
 
         comp = {
-                PIN_RED : Color.COMP_RED,
-                PIN_GREEN : Color.COMP_GREEN,
-                PIN_BLUE : Color.COMP_BLUE}[pin]
+                self._redPin : Color.COMP_RED,
+                self._greenPin : Color.COMP_GREEN,
+                self._bluePin : Color.COMP_BLUE}[pin]
 
         self._color.setComp(comp, val / 255.0)
 
