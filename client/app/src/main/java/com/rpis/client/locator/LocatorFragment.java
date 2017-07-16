@@ -2,6 +2,7 @@
 package com.rpis.client.locator;
 
 import com.rpis.client.ATab;
+import com.rpis.client.Settings;
 import com.rpis.service.comm.IRpisServer;
 import com.rpis.service.comm.IRpisService;
 import com.rpis.service.comm.IServerScanCallback;
@@ -43,6 +44,8 @@ public class LocatorFragment extends ATab {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ServerListItem item = (ServerListItem)adapterView.getItemAtPosition(i);
 
+                Settings.getInstance().setLastServerUid(item.server.getUid());
+
                 mListener.onServerSelected(item.server);
             }
         });
@@ -63,6 +66,11 @@ public class LocatorFragment extends ATab {
                             String displayName = server.getName() + "(" + server.getVersion() + ")\n" + server.getUid();
 
                             adapter.insert(new ServerListItem(displayName, server), adapter.getCount());
+
+                            String lastSelectedServerUid = Settings.getInstance().getLastServerUid();
+                            if(mFirstSearch && lastSelectedServerUid != null && lastSelectedServerUid.equals(server.getUid())) {
+                                mListener.onServerSelected(server);
+                            }
                         }
                     });
 
@@ -86,6 +94,8 @@ public class LocatorFragment extends ATab {
         }
 
         mAdapter.clear();
+
+        mFirstSearch = false;
     }
 
     @Override
@@ -93,8 +103,8 @@ public class LocatorFragment extends ATab {
         return "Server Locator";
     }
 
-
     private IListener mListener;
     private ListView mList;
     private ServerListAdapter mAdapter;
+    private boolean mFirstSearch = true;
 }
