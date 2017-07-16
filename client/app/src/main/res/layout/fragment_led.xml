@@ -35,18 +35,30 @@
         android:id="@+id/hue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="60px"
+        android:paddingBottom="60px"
+        android:paddingLeft="30px"
+        android:paddingRight="30px"
         android:max="100"
         android:progress="0" />
 
     <SeekBar
         android:id="@+id/saturation"
         android:layout_width="match_parent"
+        android:paddingTop="60px"
+        android:paddingBottom="60px"
+        android:paddingLeft="30px"
+        android:paddingRight="30px"
         android:max="100"
         android:layout_height="wrap_content" />
 
     <SeekBar
         android:id="@+id/value"
         android:layout_width="match_parent"
+        android:paddingTop="60px"
+        android:paddingBottom="60px"
+        android:paddingLeft="30px"
+        android:paddingRight="30px"
         android:max="100"
         android:layout_height="wrap_content" />
 
