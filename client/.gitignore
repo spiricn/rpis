@@ -10,3 +10,4 @@
 app/src/main/bin/
 app/src/main/gen/
 app/src/main/project.properties
+.idea/
