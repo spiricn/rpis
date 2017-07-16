@@ -27,6 +27,8 @@ import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class LedFragment extends AControl {
@@ -89,6 +91,26 @@ public class LedFragment extends AControl {
 
                 try {
                     getServer().getLedControl().runPrefab(item.prefab.getId());
+
+                    if(mColorUpdater != null) {
+                        mColorUpdater.cancel();
+                        mColorUpdater = null;
+                    }
+
+                    mColorUpdater = new Timer();
+
+                    mColorUpdater.scheduleAtFixedRate(new TimerTask(){
+                        @Override
+                        public void run() {
+                            LedFragment.this.getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateUi();
+                                }
+                            });
+                        }
+                    }, 0, 1000);
+
                 } catch (RemoteException e) {
                     // TODo
                     e.printStackTrace();
@@ -99,6 +121,11 @@ public class LedFragment extends AControl {
         ((Button)getView().findViewById(R.id.btnStopPrefab)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mColorUpdater != null) {
+                    mColorUpdater.cancel();
+                    mColorUpdater = null;
+                }
+
                 try {
                     getServer().getLedControl().stopPrefab();
                 } catch (RemoteException e) {
@@ -230,6 +257,7 @@ public class LedFragment extends AControl {
     private ToggleButton mPowerToggle;
     private ListView mPrefabsList;
     private PrefabsListAdapter mPrefabsAdapter;
+    private Timer mColorUpdater;
 
     private boolean mUiUpdating = false;
 
