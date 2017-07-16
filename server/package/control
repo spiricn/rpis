@@ -1,7 +1,0 @@
-Package: rpis
-Version: 1.0.0
-Section: base
-Priority: optional
-Architecture: armhf
-Maintainer: Nikola Spiric <nikola.spiric.ns@gmail.com>
-Description: RPIS Server

@@ -3,12 +3,15 @@
 
 main() {
     set -e
+    local projectRoot=`pwd`/..
 
-    local name="rpis_1.0.0"
+    # Acquire the server version
+    local version=`PYTHONPATH=${projectRoot}:${PYTHONPATH} python3 -c "import rpis; print(rpis.__version__)"`
+
+    local name="rpis_${version}"
     local packageName=${name}.deb
     local rootDir=${name}
     local installRoot=${rootDir}/usr/local/bin/rpis
-    local projectRoot=`pwd`/..
 
     # Create a binary
     pyinstaller \
@@ -41,12 +44,22 @@ main() {
 
     # Create the manifest
     mkdir -p ${rootDir}/DEBIAN
-    cp -v control ${rootDir}/DEBIAN/control
+
+    # Generate control file
+    echo "Package: rpis" >> ${rootDir}/DEBIAN/control
+    echo "Version: ${version}" >> ${rootDir}/DEBIAN/control
+    echo "Section: base" >> ${rootDir}/DEBIAN/control
+    echo "Priority: optional" >> ${rootDir}/DEBIAN/control
+    echo "Architecture: armhf" >> ${rootDir}/DEBIAN/control
+    echo "Maintainer: Nikola Spiric <nikola.spiric.ns@gmail.com>" >> ${rootDir}/DEBIAN/control
+    echo "Description: RPIS Server" >> ${rootDir}/DEBIAN/control
+    echo "Depends: pigpiod" >> ${rootDir}/DEBIAN/control
+
     cp -v postinst ${rootDir}/DEBIAN/postinst
+    chmod -v 0555 ${rootDir}/DEBIAN/postinst
 
     # Create the package
     dpkg-deb --build ${rootDir}
-
 
     echo "###################"
     echo "created: `pwd`/${packageName}"
