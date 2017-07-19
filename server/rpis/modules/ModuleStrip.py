@@ -39,7 +39,7 @@ class ModuleStrip(Module):
         for r, g, b, name in colors:
             logger.debug(name)
             self._ctrl.setRGB(r, g, b, True)
-            time.sleep(0.5)
+            time.sleep(0.2)
 
     @property
     def prefabs(self):
