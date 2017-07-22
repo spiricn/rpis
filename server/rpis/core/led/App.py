@@ -27,13 +27,13 @@ class App(cmd.Cmd):
     def do_on(self, arg):
         self._ctrl.runProcess(ColorSetProc(
                                [ColorKeyFrame(self._ctrl.pc.getRGB(), 0),
-                                ColorKeyFrame(Color(255, 255, 255), 1.5)]
+                                ColorKeyFrame(Color(rgb=(255, 255, 255)), 1.5)]
                               ))
 
     def do_off(self, arg):
         self._ctrl.runProcess(ColorSetProc(
                                [ColorKeyFrame(self._ctrl.pc.getRGB(), 0),
-                                ColorKeyFrame(Color(0, 0, 0), 1.5)]
+                                ColorKeyFrame(Color(rgb=(0, 0, 0)), 1.5)]
                               ))
 
     def do_printPrefabs(self, arg):
@@ -71,13 +71,13 @@ class App(cmd.Cmd):
             return False
 
         self._ctrl.runProcess(ColorSetProc([ColorKeyFrame(self._ctrl.pc.getRGB(), 0.0),
-                                            ColorKeyFrame(Color(h, s, v), duration)]))
+                                            ColorKeyFrame(Color(hsv=(h, s, v)), duration)]))
 
     def do_flash(self, arg):
         self._ctrl.runProcess(ColorSetProc(
-                       [ColorKeyFrame(Color(0, 0, 0), 0),
-                        ColorKeyFrame(Color(0, 0, 1.0), 0.1),
-                        ColorKeyFrame(Color(0, 0, 0), 0.2)],
+                       [ColorKeyFrame(Color(hsv=(0, 0, 0)), 0),
+                        ColorKeyFrame(Color(hsv=(0, 0, 1.0)), 0.1),
+                        ColorKeyFrame(Color(hsv=(0, 0, 0)), 0.2)],
                       ))
 
     def do_get(self, arg):

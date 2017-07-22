@@ -111,6 +111,6 @@ class ModuleStripREST(ModuleStrip):
             logger.error('Invalid color argument provided: %r' % str(e))
             return (CODE_BAD_REQUEST, MIME_TEXT, 'Invalid color argument provided: %r' % str(e))
 
-        self.setColor(Color(h, s, v))
+        self.setColor(Color(hsv=(h, s, v)))
 
         return (CODE_OK, MIME_JSON, {'success' : True})

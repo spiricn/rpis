@@ -19,7 +19,7 @@ class PinController():
         self._initialized = False
 
         # Default value pure white
-        self._color = Color.fromRGB(1.0, 1.0, 1.0)
+        self._color = Color(rgb=(1.0, 1.0, 1.0))
         self._redPin = redPin
         self._greenPin = greenPin
         self._bluePin = bluePin
@@ -67,7 +67,7 @@ class PinController():
         return True
 
     def getRGB(self):
-        return Color(self._color.h, self._color.s, self._color.v)
+        return Color(hsv=(self._color.h, self._color.s, self._color.v))
 
     def setRGB(self, r=None, g=None, b=None):
         if not self._initialized:

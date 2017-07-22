@@ -19,7 +19,7 @@ class Prefabs:
 
             keyframes = []
             for color in colors:
-                keyframes.append(ColorKeyFrame(Color(color), currTime))
+                keyframes.append(ColorKeyFrame(Color(rgb=color), currTime))
 
                 currTime += duration
             self.add(name, lambda: ColorSetProc(keyframes, True))
