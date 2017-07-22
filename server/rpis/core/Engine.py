@@ -1,21 +1,20 @@
 from logging import Formatter
 import logging
 import os
-import sys
 import tempfile
 from time import sleep
+
+from ssc.servlets.ServletContainer import ServletContainer
+from ssc.utils.Utils import getLocalIp
 
 from rpis.app.LoggingHandler import LoggingHandler
 from rpis.core.AttributeDict import AttributeDict
 from rpis.core.BroadcastListener import BroadcastListener
 from rpis.core.ModuleManager import ModuleManager
-from rpis.core.UpdatingFileReader import UpdatingFileReader
 from rpis.modules.ModuleREST import ModuleREST
 from rpis.modules.rest.ModulePowerREST import ModulePowerREST
 from rpis.modules.rest.ModuleStatusREST import ModuleStatusREST
 from rpis.modules.rest.ModuleStripREST import ModuleStripREST
-from ssc.servlets.ServletContainer import ServletContainer
-from ssc.utils.Utils import getLocalIp
 
 
 logger = logging.getLogger(__name__)
@@ -28,9 +27,7 @@ class Engine:
         ModuleREST
     )
 
-    def __init__(self):
-        serverRoot = os.path.dirname(os.path.abspath(sys.argv[0]))
-
+    def __init__(self, serverRoot):
         configFilePath = os.path.join(serverRoot, 'default_config.py')
 
         rootLogger = logging.getLogger()

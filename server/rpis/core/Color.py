@@ -1,6 +1,5 @@
 from builtins import staticmethod
 import colorsys
-import math
 
 from rpis.core.Utils import lerp
 

@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 
 from rpis.Config import Config
@@ -9,13 +10,18 @@ def programMain():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-no_rpi_api', action='store_true', help='If set, server will not use platform specific APIs')
+    parser.add_argument('-root', help='Server root directory')
 
     args = parser.parse_args()
 
     if args.no_rpi_api:
         Config.rpiApi = False
 
-    engine = Engine()
+    serverRoot = os.path.dirname(os.path.abspath(sys.argv[0]))
+    if args.root:
+        serverRoot = args.root
+
+    engine = Engine(serverRoot)
 
     engine.start()
 
