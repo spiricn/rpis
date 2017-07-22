@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 class Settings:
     KEY_STRIP_LAST_COLOR = 'strip.last_color'
+    KEY_STRIP_POWERED_ON = 'strip.powered_on'
 
     def __init__(self, path):
         self._path = path
@@ -18,12 +19,25 @@ class Settings:
 
     @property
     def lastColor(self):
-        with self._lock:
-            return self._settings[self.KEY_STRIP_LAST_COLOR] if self.KEY_STRIP_LAST_COLOR in self._settings else None
+        return self._getProp(self.KEY_STRIP_LAST_COLOR)
 
     def setLastColor(self, lastColor):
+        return self._setProp(self.KEY_STRIP_LAST_COLOR, lastColor)
+
+    @property
+    def stripPoweredOn(self):
+        return self._getProp(self.KEY_STRIP_POWERED_ON, False)
+
+    def setStripPoweredOn(self, poweredOn):
+        return self._setProp(self.KEY_STRIP_POWERED_ON, poweredOn)
+
+    def _getProp(self, key, default=None):
         with self._lock:
-            self._settings[self.KEY_STRIP_LAST_COLOR] = lastColor
+            return self._settings[key] if key in self._settings else default
+
+    def _setProp(self, key, value):
+        with self._lock:
+            self._settings[key] = value
             self._save()
 
     def _save(self):

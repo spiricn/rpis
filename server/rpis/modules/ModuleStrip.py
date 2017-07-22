@@ -25,6 +25,9 @@ class ModuleStrip(Module):
 
         self._prefabs.fromManifest(self.manager.engine.config.prefabs)
 
+        if self.manager.engine.settings.stripPoweredOn:
+            self.powerOn()
+
     @property
     def prefabs(self):
         return self._prefabs.prefabs
@@ -77,6 +80,8 @@ class ModuleStrip(Module):
 
         self._firstPowerOn = False
 
+        self.manager.engine.settings.setStripPoweredOn(True)
+
         return True
 
     def powerOff(self):
@@ -88,6 +93,8 @@ class ModuleStrip(Module):
         self._powered = False
 
         self._ctrl.term(blocking=True)
+
+        self.manager.engine.settings.setStripPoweredOn(False)
 
         return True
 
