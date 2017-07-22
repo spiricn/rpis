@@ -58,6 +58,9 @@ main() {
     cp -v postinst ${rootDir}/DEBIAN/postinst
     chmod -v 0555 ${rootDir}/DEBIAN/postinst
 
+    cp -v prerm ${rootDir}/DEBIAN/prerm
+    chmod -v 0555 ${rootDir}/DEBIAN/prerm
+
     # Create the package
     dpkg-deb --build ${rootDir}
 
