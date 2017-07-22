@@ -11,6 +11,7 @@ from rpis.app.LoggingHandler import LoggingHandler
 from rpis.core.AttributeDict import AttributeDict
 from rpis.core.BroadcastListener import BroadcastListener
 from rpis.core.ModuleManager import ModuleManager
+from rpis.core.Settings import Settings
 from rpis.modules.ModuleREST import ModuleREST
 from rpis.modules.rest.ModulePowerREST import ModulePowerREST
 from rpis.modules.rest.ModuleStatusREST import ModuleStatusREST
@@ -29,6 +30,8 @@ class Engine:
 
     def __init__(self, serverRoot):
         configFilePath = os.path.join(serverRoot, 'default_config.py')
+
+        self._settings = Settings(os.path.join(serverRoot, '.settings'))
 
         rootLogger = logging.getLogger()
         rootLogger.setLevel(logging.NOTSET)
@@ -60,6 +63,10 @@ class Engine:
             self._moduleManager.registerModule(module)
 
         self._running = True
+
+    @property
+    def settings(self):
+        return self._settings
 
     @property
     def logHandler(self):

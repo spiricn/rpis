@@ -1,5 +1,4 @@
 import logging
-import time
 
 from rpis.core.Module import Module
 from rpis.core.led.StripController import StripController
@@ -13,6 +12,7 @@ class ModuleStrip(Module):
     def __init__(self, manager):
         Module.__init__(self, manager, 'Strip')
 
+        self._firstPowerOn = True
         self._powered = False
 
         self._ctrl = StripController(
@@ -71,6 +71,12 @@ class ModuleStrip(Module):
 
         self._ctrl.init()
 
+        logger.debug('last color: ' + str(self.manager.engine.settings.lastColor))
+        if self._firstPowerOn and self.manager.engine.settings.lastColor:
+            self.setColor(self.manager.engine.settings.lastColor)
+
+        self._firstPowerOn = False
+
         return True
 
     def powerOff(self):
@@ -94,6 +100,8 @@ class ModuleStrip(Module):
         self._currColor = color
 
         self._ctrl.setRGB(color.r, color.g, color.b)
+
+        self.manager.engine.settings.setLastColor(color)
 
     @property
     def poweredOn(self):
