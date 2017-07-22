@@ -1,3 +1,4 @@
+from copy import deepcopy
 import logging
 
 from rpis.Config import Config
@@ -17,10 +18,12 @@ class PinController():
     def __init__(self, redPin, greenPin, bluePin):
         self._initialized = False
 
-        self._color = Color()
+        # Default value pure white
+        self._color = Color.fromRGB(1.0, 1.0, 1.0)
         self._redPin = redPin
         self._greenPin = greenPin
         self._bluePin = bluePin
+        self._lastColor = deepcopy(self._color)
 
     @property
     def initialized(self):
@@ -38,7 +41,7 @@ class PinController():
 
         self._initialized = True
 
-        self.setRGB(self._color.r, self._color.g, self._color.b)
+        self.setRGB(self._lastColor.r, self._lastColor.g, self._lastColor.b)
 
         logger.debug('initialized OK')
 
@@ -51,7 +54,7 @@ class PinController():
             logger.error('not initialized')
             return False
 
-
+        self._lastColor = deepcopy(self._color)
         self.setRGB(0, 0, 0)
 
         if Config.rpiApi:

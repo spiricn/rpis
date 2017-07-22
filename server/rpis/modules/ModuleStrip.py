@@ -25,22 +25,6 @@ class ModuleStrip(Module):
 
         self._prefabs.fromManifest(self.manager.engine.config.prefabs)
 
-        self._ctrl.init()
-
-        # Flash some colors to indicate startup
-        colors = [
-          (255, 0, 0, 'red'),
-          (0, 255, 0, 'green'),
-          (0, 0, 255, 'blue'),
-          (255, 255, 255, 'white'),
-          (0, 0, 0, 'black'),
-          ]
-
-        for r, g, b, name in colors:
-            logger.debug(name)
-            self._ctrl.setRGB(r, g, b, True)
-            time.sleep(0.2)
-
     @property
     def prefabs(self):
         return self._prefabs.prefabs
